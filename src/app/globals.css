@@ -1,0 +1,26 @@
+@import "tailwindcss";
+@import '../styles/gaming-tokens.css';
+
+:root {
+  --background: #0A0A0F;
+  --foreground: #FFFFFF;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-exo);
+  --font-mono: var(--font-jetbrains);
+}
+
+body {
+  background: var(--color-dark-bg);
+  color: var(--color-dark-text);
+  font-family: var(--font-gaming-secondary);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+* {
+  box-sizing: border-box;
+}
