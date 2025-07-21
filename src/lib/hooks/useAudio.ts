@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from 'react'
 import { audioManager } from '../audio/manager'
 import { audioSynthesizer } from '../audio/synthesizer'
+import { marioSynthesizer } from '../audio/mario-synthesizer'
 import { AudioPreferences } from '../audio/types'
 import { CONTEXT_MUSIC, ACHIEVEMENT_SOUNDS, UI_SOUNDS } from '../audio/tracks'
 
@@ -156,11 +157,11 @@ export function useAudio(): UseAudioReturn {
     audioManager.toggleSFX()
   }, [mounted])
 
-  // Context-aware music
+  // Context-aware music - DISABLED: Music now controlled by MarioAutoPlay component
   const playContextMusic = useCallback(async (context: keyof typeof CONTEXT_MUSIC) => {
-    if (!audioManager || !mounted) return
-    const trackId = CONTEXT_MUSIC[context]
-    await audioManager.playMusic(trackId, true)
+    if (!mounted) return
+    console.log('🎵 playContextMusic called but disabled - music controlled by MarioAutoPlay component')
+    // All music is now controlled by the MarioAutoPlay component globally
   }, [mounted])
 
   // Initialize audio (call on user interaction)

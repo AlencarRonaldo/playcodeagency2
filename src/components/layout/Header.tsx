@@ -22,6 +22,7 @@ import {
 import { audioHelpers } from '@/lib/hooks/useAudio'
 import { trackingHelpers } from '@/lib/hooks/useAchievements'
 import RetroGamepadIcon from '@/components/gaming/RetroGamepadIcon'
+import PixelLogo from '@/components/gaming/PixelLogo'
 
 interface NavItem {
   name: string
@@ -129,14 +130,7 @@ export default function Header() {
               >
                 <RetroGamepadIcon size={20} className="text-led-white" animate={true} />
               </motion.div>
-              <div>
-                <div className="gaming-title text-xl font-bold text-neon-cyan">
-                  PlayCode
-                </div>
-                <div className="gaming-mono text-xs text-led-white/60 -mt-1">
-                  AGENCY
-                </div>
-              </div>
+              <PixelLogo size="sm" animated={true} />
             </Link>
 
             {/* Desktop Navigation */}
@@ -275,14 +269,7 @@ export default function Header() {
                     <div className="w-8 h-8 bg-gradient-to-br from-neon-cyan to-gaming-purple rounded-lg flex items-center justify-center">
                       <RetroGamepadIcon size={16} className="text-led-white" animate={true} />
                     </div>
-                    <div>
-                      <div className="gaming-title text-lg font-bold text-neon-cyan">
-                        PlayCode
-                      </div>
-                      <div className="gaming-mono text-xs text-led-white/60 -mt-1">
-                        AGENCY
-                      </div>
-                    </div>
+                    <PixelLogo size="sm" animated={true} />
                   </div>
                   <button
                     onClick={toggleMenu}

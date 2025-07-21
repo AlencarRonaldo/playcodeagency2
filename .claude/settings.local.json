@@ -19,7 +19,15 @@
       "Bash(sed:*)",
       "Bash(npm run type-check:*)",
       "Bash(npm run:*)",
-      "Bash(rm:*)"
+      "Bash(rm:*)",
+      "mcp__ide__getDiagnostics",
+      "Bash(curl:*)",
+      "Bash(node:*)",
+      "Bash(timeout 10 npm run dev)",
+      "Bash(pkill:*)",
+      "Bash(true)",
+      "Bash(grep:*)",
+      "WebFetch(domain:yukaichou.com)"
     ],
     "deny": []
   }

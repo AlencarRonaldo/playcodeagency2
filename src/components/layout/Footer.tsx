@@ -26,6 +26,7 @@ import {
 } from 'lucide-react'
 import { audioHelpers } from '@/lib/hooks/useAudio'
 import { trackingHelpers } from '@/lib/hooks/useAchievements'
+import PixelLogo from '@/components/gaming/PixelLogo'
 
 interface FooterSection {
   title: string
@@ -246,14 +247,7 @@ export default function Footer() {
                   >
                     <Code size={24} className="text-led-white" />
                   </motion.div>
-                  <div>
-                    <div className="gaming-title text-2xl font-bold text-neon-cyan">
-                      PlayCode
-                    </div>
-                    <div className="gaming-mono text-sm text-led-white/60 -mt-1">
-                      AGENCY
-                    </div>
-                  </div>
+                  <PixelLogo size="md" animated={true} />
                 </Link>
 
                 <p className="gaming-subtitle text-sm text-led-white/80 mb-6 leading-relaxed">

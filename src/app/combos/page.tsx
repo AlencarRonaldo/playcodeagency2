@@ -219,8 +219,8 @@ export default function CombosPage() {
   useEffect(() => {
     setMounted(true)
     trackingHelpers.trackPageView('/combos')
-    playContextMusic('default')
-  }, [playContextMusic])
+    // Music is now controlled by the MarioAutoPlay component globally
+  }, [])
 
   const handleComboSelect = (comboId: string) => {
     audioHelpers.playPowerUpSelect()

@@ -2,12 +2,11 @@ import type { Metadata } from "next";
 import { Orbitron, Exo_2, JetBrains_Mono, Rajdhani } from "next/font/google";
 import "./globals.css";
 import AchievementProvider from "@/components/gaming/AchievementProvider";
-import AudioControls from "@/components/gaming/AudioControls";
-import AudioInitButton from "@/components/gaming/AudioInitButton";
 import KonamiEffects from "@/components/gaming/KonamiEffects";
 import WhatsAppFloat from "@/components/ui/WhatsAppFloat";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
+import MarioAutoPlay from "@/components/audio/MarioAutoPlay";
 
 const orbitron = Orbitron({
   variable: "--font-orbitron",
@@ -61,8 +60,7 @@ export default function RootLayout({
             {children}
           </main>
           <Footer />
-          <AudioControls position="bottom-right" />
-          <AudioInitButton />
+          <MarioAutoPlay />
           <WhatsAppFloat 
             phoneNumber="5511956534963"
             position="bottom-left"

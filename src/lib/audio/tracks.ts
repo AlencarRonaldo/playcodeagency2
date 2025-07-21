@@ -33,6 +33,16 @@ export const AUDIO_TRACKS: Record<string, AudioTrack> = {
     preload: false
   },
 
+  mario_theme: {
+    id: 'mario_theme',
+    name: 'Super Mario Bros Theme',
+    url: ['/sounds/music/mario-theme.mp3', '/sounds/music/mario-theme.ogg'],
+    loop: true,
+    volume: 0.4,
+    category: 'music',
+    preload: true
+  },
+
   // UI Sound Effects - Gaming optimized
   click_primary: {
     id: 'click_primary',
@@ -184,12 +194,12 @@ export const AUDIO_TRACKS: Record<string, AudioTrack> = {
 
 // Audio Context Mapping
 export const CONTEXT_MUSIC = {
-  hero: 'cyberpunk_intense',
-  powerups: 'cyberpunk_ambient', 
-  contact: 'cyberpunk_chill',
-  chatbot: 'cyberpunk_ambient',
-  achievements: 'cyberpunk_ambient',
-  default: 'cyberpunk_ambient'
+  hero: 'mario_theme',
+  powerups: 'mario_theme', 
+  contact: 'mario_theme',
+  chatbot: 'mario_theme',
+  achievements: 'mario_theme',
+  default: 'mario_theme'
 } as const
 
 // Achievement Sound Mapping

@@ -180,8 +180,8 @@ export default function SobrePage() {
     trackingHelpers.trackPageView('/sobre')
     
     // Play ambient music
-    playContextMusic('default')
-  }, [playContextMusic])
+    // Music is now controlled by the MarioAutoPlay component globally
+  }, [])
 
   const handleMemberSelect = (memberId: string) => {
     audioHelpers.playPowerUpSelect()
@@ -602,6 +602,9 @@ export default function SobrePage() {
               onClick={() => {
                 audioHelpers.playClick(true)
                 trackingHelpers.trackClick('about_main_cta')
+                
+                // Navigate to contact page
+                window.location.href = '/contato'
               }}
               className="gaming-button text-lg px-8 py-4"
             >

@@ -546,9 +546,8 @@ Gostaria de agendar uma reunião para discutir um orçamento personalizado. Quan
     // Track page view
     trackingHelpers.trackPageView('/planos')
     
-    // Play ambient music
-    playContextMusic('default')
-  }, [playContextMusic])
+    // Music is now controlled by the MarioAutoPlay component globally
+  }, [])
 
   // Removed unused handlePlanSelect function
 
@@ -755,7 +754,7 @@ Gostaria de agendar uma reunião para discutir um orçamento personalizado. Quan
 
                 {/* NEW Badge - Cyberpunk Style for Business One */}
                 {plan.isNew && (
-                  <div className="absolute -top-3 -left-3 z-50">
+                  <div className="absolute -top-3 -right-3 z-50">
                     <div className="relative group">
                       {/* Cyberpunk glow effect */}
                       <div className="absolute inset-0 bg-electric-blue/40 rounded-xl blur-xl animate-pulse scale-110"></div>
@@ -845,11 +844,11 @@ Gostaria de agendar uma reunião para discutir um orçamento personalizado. Quan
                         </>
                       ) : (
                         <>
-                          <div className={`gaming-display text-3xl font-bold mb-1 ${config.text}`}>
-                            R$ {currentPrice.toLocaleString()}
+                          <div className={`gaming-display text-2xl font-bold mb-1 ${config.text}`}>
+                            12x R$ {Math.ceil(currentPrice / 12).toLocaleString()}
                           </div>
                           <div className="gaming-mono text-xs text-led-white/60">
-                            {(plan.id === 'starter' || plan.id === 'professional' || plan.id === 'enterprise') ? 'valor único' : `por ${billingCycle === 'monthly' ? 'mês' : 'ano'}`}
+                            ou R$ {currentPrice.toLocaleString()} à vista
                           </div>
                           {plan.price.setup && plan.price.setup > 0 && (
                             <div className="gaming-mono text-xs text-led-white/50 mt-1">
@@ -1579,6 +1578,19 @@ Gostaria de saber mais informações e como proceder com a contratação. Quando
               onClick={() => {
                 audioHelpers.playClick(true)
                 trackingHelpers.trackClick('plans_main_cta')
+                
+                // Open WhatsApp with specialist message
+                const message = `🎮 Olá! Gostaria de falar com um especialista sobre os planos da PlayCode Agency.
+
+📋 *Interesse:*
+• Quero entender qual plano é ideal para meu negócio
+• Tenho dúvidas sobre funcionalidades e recursos
+• Gostaria de um orçamento personalizado
+
+Quando podemos conversar para discutir minha necessidade?`
+                
+                const whatsappUrl = `https://wa.me/5511956534963?text=${encodeURIComponent(message)}`
+                window.open(whatsappUrl, '_blank')
               }}
               className="gaming-button text-lg px-8 py-4"
             >

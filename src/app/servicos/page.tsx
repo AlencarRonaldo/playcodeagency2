@@ -50,7 +50,7 @@ const SERVICES: Service[] = [
     technologies: ['React', 'Next.js', 'TypeScript', 'Tailwind CSS', 'Framer Motion'],
     deliverables: ['Código fonte completo', 'Documentação técnica', 'Testes automatizados', 'Deploy em produção'],
     timeline: '4-12 semanas',
-    price: 'A partir de R$ 8.000',
+    price: 'Consultar',
     highlighted: true
   },
   {
@@ -70,7 +70,7 @@ const SERVICES: Service[] = [
     technologies: ['React Native', 'Swift', 'Kotlin', 'Expo', 'Firebase'],
     deliverables: ['Apps para iOS e Android', 'Backend personalizado', 'Analytics integrado', 'Suporte pós-launch'],
     timeline: '8-16 semanas',
-    price: 'A partir de R$ 15.000'
+    price: 'Consultar'
   },
   {
     id: 'ai-integration',
@@ -89,7 +89,7 @@ const SERVICES: Service[] = [
     technologies: ['OpenAI GPT', 'Python', 'TensorFlow', 'Hugging Face', 'LangChain'],
     deliverables: ['Modelo de IA treinado', 'API de integração', 'Dashboard de monitoramento', 'Documentação completa'],
     timeline: '6-20 semanas',
-    price: 'A partir de R$ 12.000',
+    price: 'Consultar',
     highlighted: true
   }
 ]
@@ -137,8 +137,8 @@ export default function ServicosPage() {
     trackingHelpers.trackPageView('/servicos')
     
     // Play ambient music
-    playContextMusic('default')
-  }, [playContextMusic])
+    // Music is now controlled by the MarioAutoPlay component globally
+  }, [])
 
   const handleServiceSelect = (serviceId: string) => {
     audioHelpers.playPowerUpSelect()
@@ -277,13 +277,10 @@ export default function ServicosPage() {
                       {service.description}
                     </p>
                     
-                    {/* Timeline & Price */}
-                    <div className="flex justify-between items-center mb-4">
-                      <span className="gaming-mono text-xs text-neon-cyan">
-                        {service.timeline}
-                      </span>
-                      <span className="gaming-display text-lg font-bold text-laser-green">
-                        {service.price}
+                    {/* Timeline */}
+                    <div className="text-center mb-4">
+                      <span className="gaming-mono text-sm text-neon-cyan font-bold">
+                        Timeline: {service.timeline}
                       </span>
                     </div>
                   </div>
@@ -451,10 +448,13 @@ export default function ServicosPage() {
               onClick={() => {
                 audioHelpers.playClick(true)
                 trackingHelpers.trackClick('services_main_cta')
+                
+                // Navigate to contact page
+                window.location.href = '/contato'
               }}
               className="gaming-button text-lg px-8 py-4"
             >
-              <span className="relative z-10">INICIAR PROJETO</span>
+              <span className="relative z-10">INICIAR PROJETOS</span>
             </motion.button>
             
             <motion.button

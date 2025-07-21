@@ -1,205 +1,161 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { WebhookEvent } from '@/lib/payments/types'
-import crypto from 'crypto'
+import { NextRequest, NextResponse } from 'next/server';
+import crypto from 'crypto';
+import { OnboardingService } from '@/lib/services/onboarding';
+import { EmailService } from '@/lib/services/email';
+import { WhatsAppService } from '@/lib/services/whatsapp';
 
-// Função para verificar assinatura do webhook
-function verifyWebhookSignature(payload: string, signature: string, secret: string): boolean {
-  try {
-    const expectedSignature = crypto
-      .createHmac('sha256', secret)
-      .update(payload)
-      .digest('hex')
-    
-    return crypto.timingSafeEqual(
-      Buffer.from(signature),
-      Buffer.from(expectedSignature)
-    )
-  } catch (error) {
-    console.error('Error verifying webhook signature:', error)
-    return false
-  }
+// Types
+interface PagSeguroWebhookData {
+  id: string;
+  reference_id: string;
+  status: 'PAID' | 'DECLINED' | 'CANCELED' | 'PENDING';
+  created_at: string;
+  customer: {
+    name: string;
+    email: string;
+    tax_id: string;
+    phones?: Array<{
+      country: string;
+      area: string;
+      number: string;
+    }>;
+  };
+  items: Array<{
+    reference_id: string;
+    name: string;
+    quantity: number;
+    unit_amount: number;
+  }>;
+  charges: Array<{
+    id: string;
+    status: string;
+    amount: {
+      value: number;
+      currency: string;
+    };
+    payment_method: {
+      type: string;
+    };
+  }>;
 }
 
-// POST /api/webhooks/pagseguro - Receber webhooks do PagSeguro
+interface OnboardingData {
+  customerId: string;
+  customerName: string;
+  customerEmail: string;
+  customerPhone?: string;
+  serviceType: 'website' | 'ecommerce' | 'mobile' | 'marketing' | 'automation';
+  planType: 'starter' | 'pro' | 'enterprise';
+  paymentId: string;
+  amount: number;
+  status: 'paid';
+}
+
 export async function POST(request: NextRequest) {
   try {
-    const payload = await request.text()
-    const signature = request.headers.get('x-pagseguro-signature') || ''
-    const eventType = request.headers.get('x-pagseguro-event-type') || ''
-
-    // Verificar assinatura (em produção)
-    if (process.env.NODE_ENV === 'production') {
-      const webhookSecret = process.env.PAGSEGURO_WEBHOOK_SECRET
-      if (!webhookSecret || !verifyWebhookSignature(payload, signature, webhookSecret)) {
-        console.error('Invalid webhook signature')
-        return NextResponse.json({
-          success: false,
-          error: 'Invalid signature'
-        }, { status: 401 })
-      }
+    const body = await request.text();
+    const signature = request.headers.get('x-pagseguro-signature');
+    
+    // Verify webhook signature
+    if (!verifyWebhookSignature(body, signature)) {
+      return NextResponse.json({ error: 'Invalid signature' }, { status: 401 });
     }
 
-    const webhookData: WebhookEvent = JSON.parse(payload)
+    const webhookData: PagSeguroWebhookData = JSON.parse(body);
     
-    console.log('Received PagSeguro webhook:', {
-      event_type: webhookData.event_type,
-      reference_id: webhookData.reference_id,
-      subscription_id: webhookData.data.subscription?.id
-    })
-
-    // Processar evento baseado no tipo
-    switch (webhookData.event_type) {
-      case 'SUBSCRIPTION_CREATED':
-        await handleSubscriptionCreated(webhookData)
-        break
-
-      case 'SUBSCRIPTION_ACTIVATED':
-        await handleSubscriptionActivated(webhookData)
-        break
-
-      case 'SUBSCRIPTION_PAYMENT_SUCCESS':
-        await handlePaymentSuccess(webhookData)
-        break
-
-      case 'SUBSCRIPTION_PAYMENT_FAILED':
-        await handlePaymentFailed(webhookData)
-        break
-
-      case 'SUBSCRIPTION_CANCELED':
-        await handleSubscriptionCanceled(webhookData)
-        break
-
-      default:
-        console.log(`Unhandled webhook event type: ${webhookData.event_type}`)
+    // Process only paid orders
+    if (webhookData.status !== 'PAID') {
+      return NextResponse.json({ message: 'Payment not completed' }, { status: 200 });
     }
 
-    return NextResponse.json({
-      success: true,
-      message: 'Webhook processed successfully'
-    })
+    // Extract service type from reference_id (format: service_plan_timestamp)
+    const referenceId = webhookData.reference_id;
+    const [serviceType, planType] = referenceId.split('_');
+    
+    if (!isValidServiceType(serviceType) || !isValidPlanType(planType)) {
+      console.error('Invalid service or plan type:', { serviceType, planType });
+      return NextResponse.json({ error: 'Invalid service configuration' }, { status: 400 });
+    }
+
+    // Extract customer phone
+    const customerPhone = webhookData.customer.phones?.[0] 
+      ? `+${webhookData.customer.phones[0].country}${webhookData.customer.phones[0].area}${webhookData.customer.phones[0].number}`
+      : undefined;
+
+    // Prepare onboarding data
+    const onboardingData: OnboardingData = {
+      customerId: webhookData.customer.tax_id,
+      customerName: webhookData.customer.name,
+      customerEmail: webhookData.customer.email,
+      customerPhone,
+      serviceType: serviceType as OnboardingData['serviceType'],
+      planType: planType as OnboardingData['planType'],
+      paymentId: webhookData.id,
+      amount: webhookData.charges[0]?.amount.value || 0,
+      status: 'paid'
+    };
+
+    // Initialize services
+    const onboardingService = new OnboardingService();
+    const emailService = new EmailService();
+    const whatsappService = new WhatsAppService();
+
+    // Create onboarding record
+    const onboardingRecord = await onboardingService.createOnboarding(onboardingData);
+    
+    // Send welcome email
+    await emailService.sendWelcomeEmail({
+      to: onboardingData.customerEmail,
+      customerName: onboardingData.customerName,
+      serviceType: onboardingData.serviceType,
+      planType: onboardingData.planType,
+      onboardingUrl: `${process.env.NEXT_PUBLIC_APP_URL}/onboarding/${onboardingRecord.id}`
+    });
+
+    // Send WhatsApp message (if phone available)
+    if (customerPhone) {
+      await whatsappService.sendWelcomeMessage({
+        to: customerPhone,
+        customerName: onboardingData.customerName,
+        serviceType: onboardingData.serviceType,
+        onboardingUrl: `${process.env.NEXT_PUBLIC_APP_URL}/onboarding/${onboardingRecord.id}`
+      });
+    }
+
+    // Schedule follow-up reminders
+    await onboardingService.scheduleFollowUpReminders(onboardingRecord.id);
+
+    return NextResponse.json({ 
+      message: 'Webhook processed successfully',
+      onboardingId: onboardingRecord.id 
+    });
 
   } catch (error) {
-    console.error('Error processing webhook:', error)
-    return NextResponse.json({
-      success: false,
-      error: 'Webhook processing failed'
-    }, { status: 500 })
+    console.error('PagSeguro webhook error:', error);
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
 
-// Handlers para diferentes tipos de eventos
-
-async function handleSubscriptionCreated(webhook: WebhookEvent) {
-  try {
-    console.log('Processing subscription created:', webhook.data.subscription.id)
-    
-    // TODO: Salvar assinatura no banco de dados
-    // TODO: Enviar email de confirmação para cliente
-    // TODO: Ativar recursos do plano
-    
-    // Por enquanto, apenas log
-    console.log('Subscription created successfully:', {
-      subscription_id: webhook.data.subscription.id,
-      reference_id: webhook.reference_id,
-      customer_email: webhook.data.subscription.customer_id,
-      plan_id: webhook.data.subscription.plan_id,
-      amount: webhook.data.subscription.amount
-    })
-    
-  } catch (error) {
-    console.error('Error handling subscription created:', error)
-    throw error
+function verifyWebhookSignature(body: string, signature: string | null): boolean {
+  if (!signature || !process.env.PAGSEGURO_WEBHOOK_SECRET) {
+    return false;
   }
+
+  const expectedSignature = crypto
+    .createHmac('sha256', process.env.PAGSEGURO_WEBHOOK_SECRET)
+    .update(body)
+    .digest('hex');
+
+  return crypto.timingSafeEqual(
+    Buffer.from(signature, 'hex'),
+    Buffer.from(expectedSignature, 'hex')
+  );
 }
 
-async function handleSubscriptionActivated(webhook: WebhookEvent) {
-  try {
-    console.log('Processing subscription activated:', webhook.data.subscription.id)
-    
-    // TODO: Ativar acesso completo aos recursos
-    // TODO: Atualizar status no banco de dados
-    // TODO: Enviar email de boas-vindas
-    
-    console.log('Subscription activated successfully:', {
-      subscription_id: webhook.data.subscription.id,
-      reference_id: webhook.reference_id,
-      status: webhook.data.subscription.status
-    })
-    
-  } catch (error) {
-    console.error('Error handling subscription activated:', error)
-    throw error
-  }
+function isValidServiceType(type: string): boolean {
+  return ['website', 'ecommerce', 'mobile', 'marketing', 'automation'].includes(type);
 }
 
-async function handlePaymentSuccess(webhook: WebhookEvent) {
-  try {
-    console.log('Processing payment success:', webhook.data.payment?.id)
-    
-    // TODO: Renovar acesso aos recursos
-    // TODO: Atualizar próxima data de cobrança
-    // TODO: Enviar recibo por email
-    
-    console.log('Payment processed successfully:', {
-      payment_id: webhook.data.payment?.id,
-      subscription_id: webhook.data.subscription.id,
-      amount: webhook.data.payment?.amount,
-      payment_date: webhook.data.payment?.payment_date,
-      method: webhook.data.payment?.method
-    })
-    
-  } catch (error) {
-    console.error('Error handling payment success:', error)
-    throw error
-  }
-}
-
-async function handlePaymentFailed(webhook: WebhookEvent) {
-  try {
-    console.log('Processing payment failed:', webhook.data.payment?.id)
-    
-    // TODO: Notificar cliente sobre falha no pagamento
-    // TODO: Suspender acesso se necessário (após tentativas)
-    // TODO: Tentar cobrança novamente se configurado
-    
-    console.log('Payment failed:', {
-      payment_id: webhook.data.payment?.id,
-      subscription_id: webhook.data.subscription.id,
-      amount: webhook.data.payment?.amount,
-      status: webhook.data.payment?.status
-    })
-    
-  } catch (error) {
-    console.error('Error handling payment failed:', error)
-    throw error
-  }
-}
-
-async function handleSubscriptionCanceled(webhook: WebhookEvent) {
-  try {
-    console.log('Processing subscription canceled:', webhook.data.subscription.id)
-    
-    // TODO: Suspender acesso aos recursos
-    // TODO: Atualizar status no banco de dados
-    // TODO: Enviar email de cancelamento
-    
-    console.log('Subscription canceled:', {
-      subscription_id: webhook.data.subscription.id,
-      reference_id: webhook.reference_id,
-      status: webhook.data.subscription.status
-    })
-    
-  } catch (error) {
-    console.error('Error handling subscription canceled:', error)
-    throw error
-  }
-}
-
-// GET endpoint para verificação de saúde do webhook
-export async function GET() {
-  return NextResponse.json({
-    success: true,
-    message: 'PagSeguro webhook endpoint is healthy',
-    timestamp: new Date().toISOString()
-  })
+function isValidPlanType(type: string): boolean {
+  return ['starter', 'pro', 'enterprise'].includes(type);
 }

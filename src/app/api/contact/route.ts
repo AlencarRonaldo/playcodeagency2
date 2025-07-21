@@ -100,9 +100,10 @@ export async function POST(request: NextRequest) {
     // TODO: Save to database
     console.log('💾 Contact would be saved to database:', validatedData)
 
-    // CRM Integration
+    // CRM Integration (optional)
     try {
-      const { crmManager } = await import('@/lib/crm/manager')
+      const { getCRMManager } = await import('@/lib/crm/init')
+      const crmManager = await getCRMManager()
       
       // Transform to GamingLead format
       const gamingLead = {
@@ -126,19 +127,24 @@ export async function POST(request: NextRequest) {
         syncStatus: 'pending' as const
       }
 
-      // Sync with CRM asynchronously
+      // Sync with CRM asynchronously (only if configured)
       crmManager.createLead(gamingLead).then(response => {
         if (response.success) {
           console.log('✅ Lead synced to CRM:', response.data)
         } else {
-          console.error('❌ CRM sync failed:', response.error)
+          // Log as info instead of error if no provider is configured
+          if (response.error === 'No CRM provider configured') {
+            console.log('ℹ️ CRM not configured - lead saved locally only')
+          } else {
+            console.error('❌ CRM sync failed:', response.error)
+          }
         }
       }).catch(error => {
         console.error('❌ CRM sync error:', error)
       })
     } catch (crmError) {
       // Don't fail the contact submission if CRM fails
-      console.error('❌ CRM integration error:', crmError)
+      console.log('ℹ️ CRM integration not available:', crmError)
     }
 
     // Gaming response with achievements

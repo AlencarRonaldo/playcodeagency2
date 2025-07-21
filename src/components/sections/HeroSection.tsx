@@ -22,9 +22,30 @@ export default function HeroSection() {
     level: 1,
     achievements: 0
   })
+  const [matrixRainData, setMatrixRainData] = useState<Array<{delay: number, fontSize: number, char: string}>>([])
+  const [particlesData, setParticlesData] = useState<Array<{x: number, y: number, duration: number, delay: number}>>([])
 
   const { playContextMusic } = useAudio()
   const { } = useAchievements()
+
+  // Generate matrix rain data on client side only
+  useEffect(() => {
+    const rainData = Array.from({ length: 20 }).map(() => ({
+      delay: Math.random() * 3,
+      fontSize: 12 + Math.random() * 6,
+      char: String.fromCharCode(0x30A0 + Math.floor(Math.random() * 96))
+    }))
+    setMatrixRainData(rainData)
+
+    // Generate particles data
+    const particles = Array.from({ length: 10 }).map(() => ({
+      x: Math.random() * 1200,
+      y: Math.random() * 800,
+      duration: 3 + Math.random() * 2,
+      delay: Math.random() * 5
+    }))
+    setParticlesData(particles)
+  }, [])
 
   useEffect(() => {
     if (isBooting) {
@@ -49,11 +70,9 @@ export default function HeroSection() {
           setIsBooting(false)
           animateHUDStats()
           
-          // Play boot complete sound and start hero music
+          // Play boot complete sound (music now handled by MarioAutoPlay component)
           audioHelpers.playBootComplete()
-          setTimeout(() => {
-            playContextMusic('hero')
-          }, 500)
+          // Music is now controlled by the MarioAutoPlay component
         }, 1000)
       }
       
@@ -94,17 +113,17 @@ export default function HeroSection() {
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-console">
       {/* Matrix Rain Background */}
       <div className="matrix-rain">
-        {Array.from({ length: 20 }).map((_, i) => (
+        {matrixRainData.map((data, i) => (
           <span
             key={i}
             className="text-terminal-green opacity-30"
             style={{
               left: `${i * 5}%`,
-              animationDelay: `${Math.random() * 3}s`,
-              fontSize: `${12 + Math.random() * 6}px`
+              animationDelay: `${data.delay}s`,
+              fontSize: `${data.fontSize}px`
             }}
           >
-            {String.fromCharCode(0x30A0 + Math.random() * 96)}
+            {data.char}
           </span>
         ))}
       </div>
@@ -196,18 +215,6 @@ export default function HeroSection() {
                   >
                     <span className="relative z-10">INICIAR MISSÃO</span>
                   </button>
-                  
-                  <button 
-                    className="gaming-card px-8 py-4 text-lg font-semibold text-neon-cyan border-neon-cyan hover:text-controller-black hover:bg-neon-cyan transition-all duration-300"
-                    onMouseEnter={() => audioHelpers.playHover()}
-                    onClick={() => {
-                      audioHelpers.playClick(false)
-                      trackingHelpers.trackClick('hero_view_achievements')
-                      // Show achievements modal or scroll to achievements section
-                    }}
-                  >
-                    VER ACHIEVEMENTS
-                  </button>
                 </motion.div>
 
                 {/* Quick Stats */}
@@ -218,7 +225,7 @@ export default function HeroSection() {
                   className="flex justify-center lg:justify-start space-x-8 mt-8"
                 >
                   <div className="text-center">
-                    <div className="gaming-display text-2xl font-bold text-laser-green">500+</div>
+                    <div className="gaming-display text-2xl font-bold text-laser-green">50+</div>
                     <div className="gaming-mono text-sm text-led-white/60">PROJETOS</div>
                   </div>
                   <div className="text-center">
@@ -244,86 +251,89 @@ export default function HeroSection() {
                   <div className="absolute top-4 left-4 right-4">
                     <div className="flex justify-between items-center mb-6">
                       <div className="gaming-mono text-neon-cyan text-sm">
-                        PLAYER STATUS
+                        POR QUE NOS ESCOLHER
                       </div>
                       <div className="gaming-mono text-laser-green text-sm">
-                        ONLINE
+                        COMPROVADO
                       </div>
                     </div>
                   </div>
 
                   <div className="pt-8 space-y-6">
-                    {/* Pixel Art Player Characters Gallery */}
+                    {/* Competitive Advantages Display */}
                     <div className="flex justify-center mb-6">
                       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                        {/* Starter Player - "CodeKid" */}
+                        {/* Advantage 1 - Speed & Delivery */}
                         <motion.div
                           initial={{ scale: 0, rotate: 180 }}
                           animate={{ scale: 1, rotate: 0 }}
                           transition={{ delay: 1, duration: 0.8, ease: 'easeOut' }}
-                          className="relative text-center"
+                          className="relative text-center p-4 gaming-card border-2 border-laser-green bg-laser-green/10 min-w-[140px]"
                         >
-                          <div className="w-12 h-16 relative mx-auto mb-2">
-                            {/* Head - Simple */}
-                            <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-4 h-4 bg-gradient-to-b from-amber-200 to-amber-300 border border-amber-400" style={{clipPath: 'polygon(25% 0%, 75% 0%, 100% 25%, 100% 75%, 75% 100%, 25% 100%, 0% 75%, 0% 25%)'}} />
-                            
-                            {/* Eyes */}
-                            <div className="absolute top-1 left-1/2 transform -translate-x-1/2 flex space-x-0.5">
-                              <div className="w-0.5 h-0.5 bg-black rounded-full"></div>
-                              <div className="w-0.5 h-0.5 bg-black rounded-full"></div>
-                            </div>
-                            
-                            {/* Body - Basic */}
-                            <div className="absolute top-4 left-1/2 transform -translate-x-1/2 w-6 h-6 bg-gradient-to-b from-led-white to-gray-200 border border-gray-300" style={{clipPath: 'polygon(15% 0%, 85% 0%, 100% 15%, 100% 85%, 85% 100%, 15% 100%, 0% 85%, 0% 15%)'}} />
-                            
-                            {/* Arms */}
-                            <div className="absolute top-5 left-1 w-2 h-1.5 bg-gradient-to-r from-led-white to-gray-200 border border-gray-300 rounded-sm"></div>
-                            <div className="absolute top-5 right-1 w-2 h-1.5 bg-gradient-to-r from-led-white to-gray-200 border border-gray-300 rounded-sm"></div>
-                            
-                            {/* Legs */}
-                            <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 flex space-x-0.5">
-                              <div className="w-1.5 h-4 bg-gradient-to-b from-blue-400 to-blue-500 border border-blue-500/50 rounded-sm"></div>
-                              <div className="w-1.5 h-4 bg-gradient-to-b from-blue-400 to-blue-500 border border-blue-500/50 rounded-sm"></div>
-                            </div>
+                          {/* Speed Icon Frame */}
+                          <div className="w-16 h-20 relative mx-auto mb-3 bg-gradient-to-b from-laser-green/20 to-green-400/20 rounded-lg border-2 border-laser-green flex items-center justify-center">
+                            {/* Simple Lightning Icon */}
+                            <div className="text-3xl">⚡</div>
                           </div>
-                          <div className="gaming-mono text-xs text-led-white/80 font-bold">CODEKID</div>
-                          <div className="gaming-mono text-xs text-led-white/50">Starter Pack</div>
+                          
+                          {/* Advantage Info */}
+                          <div className="gaming-mono text-xs text-laser-green font-bold">ENTREGA RÁPIDA</div>
+                          <div className="gaming-mono text-xs text-led-white/50">50% Mais Rápido</div>
+                          
+                          {/* Key Metrics */}
+                          <div className="text-xs text-laser-green mt-1">Que Concorrentes</div>
+                          <div className="text-xs text-laser-green">Deploy em 2-4 Semanas</div>
+                          
+                          {/* Trust Indicators */}
+                          <div className="flex justify-center mt-2 space-x-1">
+                            <div className="w-2 h-2 bg-laser-green rounded-full"></div>
+                            <div className="w-2 h-2 bg-laser-green rounded-full"></div>
+                            <div className="w-2 h-2 bg-laser-green rounded-full"></div>
+                          </div>
+                          
+                          {/* Speed Glow */}
+                          <motion.div
+                            animate={{ 
+                              boxShadow: [
+                                '0 0 8px rgba(0,255,127,0.3)',
+                                '0 0 16px rgba(0,255,127,0.6)',
+                                '0 0 8px rgba(0,255,127,0.3)'
+                              ]
+                            }}
+                            transition={{ duration: 2, repeat: Infinity }}
+                            className="absolute inset-0 rounded-lg pointer-events-none"
+                          />
                         </motion.div>
 
-                        {/* Pro Player - "DevMaster" */}
+                        {/* Advantage 2 - Quality & Reliability */}
                         <motion.div
                           initial={{ scale: 0, rotate: 180 }}
                           animate={{ scale: 1, rotate: 0 }}
                           transition={{ delay: 1.2, duration: 0.8, ease: 'easeOut' }}
-                          className="relative text-center"
+                          className="relative text-center p-4 gaming-card border-2 border-electric-blue bg-electric-blue/10 min-w-[140px]"
                         >
-                          <div className="w-14 h-18 relative mx-auto mb-2">
-                            {/* Head - Pro */}
-                            <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-5 h-5 bg-gradient-to-b from-electric-blue to-neon-cyan border border-electric-blue" style={{clipPath: 'polygon(20% 0%, 80% 0%, 100% 20%, 100% 80%, 80% 100%, 20% 100%, 0% 80%, 0% 20%)'}} />
-                            
-                            {/* Eyes */}
-                            <div className="absolute top-1 left-1/2 transform -translate-x-1/2 flex space-x-1">
-                              <div className="w-1 h-1 bg-plasma-yellow rounded-full"></div>
-                              <div className="w-1 h-1 bg-plasma-yellow rounded-full"></div>
-                            </div>
-                            
-                            {/* Body - Enhanced */}
-                            <div className="absolute top-5 left-1/2 transform -translate-x-1/2 w-7 h-7 bg-gradient-to-b from-electric-blue to-neon-cyan border border-electric-blue/50" style={{clipPath: 'polygon(10% 0%, 90% 0%, 100% 10%, 100% 90%, 90% 100%, 10% 100%, 0% 90%, 0% 10%)'}} />
-                            
-                            {/* Arms */}
-                            <div className="absolute top-6 left-0.5 w-2.5 h-2 bg-gradient-to-r from-electric-blue to-neon-cyan border border-electric-blue/50 rounded-sm"></div>
-                            <div className="absolute top-6 right-0.5 w-2.5 h-2 bg-gradient-to-r from-electric-blue to-neon-cyan border border-electric-blue/50 rounded-sm"></div>
-                            
-                            {/* Legs */}
-                            <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 flex space-x-1">
-                              <div className="w-2 h-5 bg-gradient-to-b from-gaming-purple to-magenta-power border border-gaming-purple/50 rounded-sm"></div>
-                              <div className="w-2 h-5 bg-gradient-to-b from-gaming-purple to-magenta-power border border-gaming-purple/50 rounded-sm"></div>
-                            </div>
+                          {/* Quality Shield Frame */}
+                          <div className="w-16 h-20 relative mx-auto mb-3 bg-gradient-to-b from-electric-blue/20 to-neon-cyan/20 rounded-lg border-2 border-electric-blue flex items-center justify-center">
+                            {/* Simple Shield Icon */}
+                            <div className="text-3xl">🛡️</div>
                           </div>
-                          <div className="gaming-mono text-xs text-electric-blue font-bold">DEVMASTER</div>
-                          <div className="gaming-mono text-xs text-led-white/50">Pro Guild</div>
                           
-                          {/* Pro Glow */}
+                          {/* Advantage Info */}
+                          <div className="gaming-mono text-xs text-electric-blue font-bold">QUALIDADE</div>
+                          <div className="gaming-mono text-xs text-led-white/50">99% Bug-Free</div>
+                          
+                          {/* Key Metrics */}
+                          <div className="text-xs text-electric-blue mt-1">Código Limpo</div>
+                          <div className="text-xs text-electric-blue">Testes Automatizados</div>
+                          
+                          {/* Trust Indicators */}
+                          <div className="flex justify-center mt-2 space-x-1">
+                            <div className="w-2 h-2 bg-electric-blue rounded-full"></div>
+                            <div className="w-2 h-2 bg-electric-blue rounded-full"></div>
+                            <div className="w-2 h-2 bg-electric-blue rounded-full"></div>
+                          </div>
+                          
+                          {/* Quality Glow */}
                           <motion.div
                             animate={{ 
                               boxShadow: [
@@ -337,41 +347,33 @@ export default function HeroSection() {
                           />
                         </motion.div>
 
-                        {/* Elite Player - "CyberWarrior" */}
+                        {/* Advantage 3 - Experience & Innovation */}
                         <motion.div
                           initial={{ scale: 0, rotate: 180 }}
                           animate={{ scale: 1, rotate: 0 }}
                           transition={{ delay: 1.4, duration: 0.8, ease: 'easeOut' }}
-                          className="relative text-center"
+                          className="relative text-center p-4 gaming-card border-2 border-gaming-purple bg-gaming-purple/10 min-w-[140px]"
                         >
-                          <div className="w-16 h-20 relative mx-auto mb-2">
-                            {/* Head - Elite with armor */}
-                            <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-6 h-6 bg-gradient-to-b from-gaming-purple to-magenta-power border-2 border-gaming-purple" style={{clipPath: 'polygon(20% 0%, 80% 0%, 100% 20%, 100% 80%, 80% 100%, 20% 100%, 0% 80%, 0% 20%)'}} />
-                            
-                            {/* Visor */}
-                            <div className="absolute top-1 left-1/2 transform -translate-x-1/2 w-4 h-2 bg-gradient-to-r from-neon-cyan to-electric-blue border border-neon-cyan rounded-sm"></div>
-                            
-                            {/* Body - Armored */}
-                            <div className="absolute top-6 left-1/2 transform -translate-x-1/2 w-8 h-8 bg-gradient-to-b from-gaming-purple to-magenta-power border-2 border-gaming-purple/70" style={{clipPath: 'polygon(10% 0%, 90% 0%, 100% 10%, 100% 90%, 90% 100%, 10% 100%, 0% 90%, 0% 10%)'}} />
-                            
-                            {/* Shoulder Pads */}
-                            <div className="absolute top-6 left-0 w-3 h-3 bg-gradient-to-r from-gaming-purple to-magenta-power border border-gaming-purple/50 rounded"></div>
-                            <div className="absolute top-6 right-0 w-3 h-3 bg-gradient-to-r from-gaming-purple to-magenta-power border border-gaming-purple/50 rounded"></div>
-                            
-                            {/* Arms */}
-                            <div className="absolute top-7 left-1 w-3 h-2 bg-gradient-to-r from-gaming-purple to-magenta-power border border-gaming-purple/50 rounded-sm"></div>
-                            <div className="absolute top-7 right-1 w-3 h-2 bg-gradient-to-r from-gaming-purple to-magenta-power border border-gaming-purple/50 rounded-sm"></div>
-                            
-                            {/* Legs */}
-                            <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 flex space-x-1">
-                              <div className="w-2 h-6 bg-gradient-to-b from-gaming-purple to-magenta-power border-2 border-gaming-purple/50 rounded-sm"></div>
-                              <div className="w-2 h-6 bg-gradient-to-b from-gaming-purple to-magenta-power border-2 border-gaming-purple/50 rounded-sm"></div>
-                            </div>
+                          <div className="w-16 h-20 relative mx-auto mb-3 bg-gradient-to-b from-gaming-purple/20 to-magenta-power/20 rounded-lg border-2 border-gaming-purple flex items-center justify-center">
+                            {/* Simple Brain/Innovation Icon */}
+                            <div className="text-3xl">🧠</div>
                           </div>
-                          <div className="gaming-mono text-xs text-gaming-purple font-bold">CYBERWARRIOR</div>
-                          <div className="gaming-mono text-xs text-led-white/50">Elite Force</div>
                           
-                          {/* Elite Glow */}
+                          {/* Advantage Info */}
+                          <div className="gaming-mono text-xs text-gaming-purple font-bold">EXPERIÊNCIA</div>
+                          <div className="gaming-mono text-xs text-led-white/50">10+ Anos Gaming</div>
+                          
+                          {/* Key Metrics */}
+                          <div className="text-xs text-gaming-purple mt-1">Tecnologia Avançada</div>
+                          <div className="text-xs text-gaming-purple">Soluções Inovadoras</div>
+                          
+                          <div className="flex justify-center mt-2 space-x-1">
+                            <div className="w-2 h-2 bg-gaming-purple rounded-full"></div>
+                            <div className="w-2 h-2 bg-gaming-purple rounded-full"></div>
+                            <div className="w-2 h-2 bg-gaming-purple rounded-full"></div>
+                          </div>
+                          
+                          {/* Innovation Glow */}
                           <motion.div
                             animate={{ 
                               boxShadow: [
@@ -385,50 +387,39 @@ export default function HeroSection() {
                           />
                         </motion.div>
 
-                        {/* Legendary Player - "QuantumLord" */}
+                        {/* Advantage 4 - Results & ROI */}
                         <motion.div
                           initial={{ scale: 0, rotate: 180 }}
                           animate={{ scale: 1, rotate: 0 }}
                           transition={{ delay: 1.6, duration: 0.8, ease: 'easeOut' }}
-                          className="relative text-center"
+                          className="relative text-center p-4 gaming-card border-2 border-plasma-yellow bg-plasma-yellow/10 min-w-[140px]"
                         >
-                          <div className="w-18 h-22 relative mx-auto mb-2">
-                            {/* Crown */}
-                            <div className="absolute -top-1 left-1/2 transform -translate-x-1/2 w-8 h-2 bg-gradient-to-r from-plasma-yellow to-yellow-300 border border-plasma-yellow rounded-t" style={{clipPath: 'polygon(0% 50%, 20% 0%, 40% 50%, 60% 0%, 80% 50%, 100% 100%, 0% 100%)'}} />
-                            
-                            {/* Head - Legendary */}
-                            <div className="absolute top-1 left-1/2 transform -translate-x-1/2 w-7 h-7 bg-gradient-to-b from-plasma-yellow to-yellow-300 border-2 border-plasma-yellow" style={{clipPath: 'polygon(15% 0%, 85% 0%, 100% 15%, 100% 85%, 85% 100%, 15% 100%, 0% 85%, 0% 15%)'}} />
-                            
-                            {/* Energy Eyes */}
-                            <div className="absolute top-3 left-1/2 transform -translate-x-1/2 flex space-x-1">
-                              <div className="w-1.5 h-1.5 bg-white border border-plasma-yellow rounded-full animate-pulse"></div>
-                              <div className="w-1.5 h-1.5 bg-white border border-plasma-yellow rounded-full animate-pulse"></div>
-                            </div>
-                            
-                            {/* Body - Legendary Armor */}
-                            <div className="absolute top-8 left-1/2 transform -translate-x-1/2 w-9 h-9 bg-gradient-to-b from-plasma-yellow to-yellow-300 border-2 border-plasma-yellow/70" style={{clipPath: 'polygon(10% 0%, 90% 0%, 100% 10%, 100% 90%, 90% 100%, 10% 100%, 0% 90%, 0% 10%)'}} />
-                            
-                            {/* Energy Core */}
-                            <div className="absolute top-10 left-1/2 transform -translate-x-1/2 w-3 h-3 bg-white border-2 border-plasma-yellow rounded-full animate-pulse"></div>
-                            
-                            {/* Legendary Shoulder Guards */}
-                            <div className="absolute top-8 -left-1 w-4 h-4 bg-gradient-to-r from-plasma-yellow to-yellow-300 border-2 border-plasma-yellow/50 rounded-lg"></div>
-                            <div className="absolute top-8 -right-1 w-4 h-4 bg-gradient-to-r from-plasma-yellow to-yellow-300 border-2 border-plasma-yellow/50 rounded-lg"></div>
-                            
-                            {/* Arms */}
-                            <div className="absolute top-9 left-0 w-4 h-3 bg-gradient-to-r from-plasma-yellow to-yellow-300 border-2 border-plasma-yellow/50 rounded-sm"></div>
-                            <div className="absolute top-9 right-0 w-4 h-3 bg-gradient-to-r from-plasma-yellow to-yellow-300 border-2 border-plasma-yellow/50 rounded-sm"></div>
-                            
-                            {/* Legs */}
-                            <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 flex space-x-1">
-                              <div className="w-2.5 h-7 bg-gradient-to-b from-plasma-yellow to-yellow-300 border-2 border-plasma-yellow/50 rounded-sm"></div>
-                              <div className="w-2.5 h-7 bg-gradient-to-b from-plasma-yellow to-yellow-300 border-2 border-plasma-yellow/50 rounded-sm"></div>
-                            </div>
+                          <div className="w-16 h-20 relative mx-auto mb-3 bg-gradient-to-b from-plasma-yellow/20 to-yellow-300/20 rounded-lg border-2 border-plasma-yellow flex items-center justify-center">
+                            {/* Simple Trophy Icon */}
+                            <div className="text-3xl">🏆</div>
                           </div>
-                          <div className="gaming-mono text-xs text-plasma-yellow font-bold">QUANTUMLORD</div>
-                          <div className="gaming-mono text-xs text-led-white/50">Legendary Tier</div>
                           
-                          {/* Legendary Glow */}
+                          {/* Advantage Info */}
+                          <div className="gaming-mono text-xs text-plasma-yellow font-bold">RESULTADOS</div>
+                          <div className="gaming-mono text-xs text-led-white/50">3x+ ROI Comprovado</div>
+                          
+                          {/* Key Metrics */}
+                          <div className="text-xs text-plasma-yellow mt-1">95% Retenção</div>
+                          <div className="text-xs text-plasma-yellow">50+ Projetos</div>
+                          
+                          {/* Success Indicators */}
+                          <div className="flex justify-center mt-2 space-x-1">
+                            <div className="w-2 h-2 bg-plasma-yellow rounded-full"></div>
+                            <div className="w-2 h-2 bg-plasma-yellow rounded-full"></div>
+                            <div className="w-2 h-2 bg-plasma-yellow rounded-full"></div>
+                          </div>
+                          
+                          {/* Success Crown */}
+                          <div className="absolute -top-2 left-1/2 transform -translate-x-1/2 w-8 h-3 bg-gradient-to-r from-plasma-yellow to-yellow-300 rounded-t-lg border border-plasma-yellow flex items-center justify-center">
+                            <span className="text-xs text-controller-black font-bold">👑</span>
+                          </div>
+                          
+                          {/* Results Glow */}
                           <motion.div
                             animate={{ 
                               boxShadow: [
@@ -444,10 +435,10 @@ export default function HeroSection() {
                       </div>
                     </div>
 
-                    {/* Business Potential Bar */}
+                    {/* Client Success Rate */}
                     <div className="hud-element">
                       <div className="flex justify-between items-center mb-2">
-                        <span className="gaming-mono text-xs">BUSINESS POTENTIAL</span>
+                        <span className="gaming-mono text-xs">TAXA DE SUCESSO</span>
                         <span className="gaming-mono text-xs text-laser-green">{hudStats.hp}%</span>
                       </div>
                       <div className="hud-bar">
@@ -460,10 +451,10 @@ export default function HeroSection() {
                       </div>
                     </div>
 
-                    {/* Digital Experience Bar */}
+                    {/* Client Satisfaction */}
                     <div className="hud-element">
                       <div className="flex justify-between items-center mb-2">
-                        <span className="gaming-mono text-xs">DIGITAL EXPERIENCE</span>
+                        <span className="gaming-mono text-xs">SATISFAÇÃO DOS CLIENTES</span>
                         <span className="gaming-mono text-xs text-electric-blue">{hudStats.xp}%</span>
                       </div>
                       <div className="hud-bar">
@@ -476,26 +467,26 @@ export default function HeroSection() {
                       </div>
                     </div>
 
-                    {/* Stats Grid */}
+                    {/* Trust Metrics */}
                     <div className="grid grid-cols-2 gap-4 pt-4">
                       <div className="hud-element text-center">
                         <div className="gaming-display text-2xl font-bold text-magenta-power">
-                          {hudStats.level}
+                          50+
                         </div>
-                        <div className="gaming-mono text-xs opacity-70">TECH LEVEL</div>
+                        <div className="gaming-mono text-xs opacity-70">PROJETOS ENTREGUES</div>
                       </div>
                       
                       <div className="hud-element text-center">
                         <div className="gaming-display text-2xl font-bold text-plasma-yellow">
-                          {hudStats.achievements}
+                          10+
                         </div>
-                        <div className="gaming-mono text-xs opacity-70">ACHIEVEMENTS</div>
+                        <div className="gaming-mono text-xs opacity-70">ANOS EXPERIÊNCIA</div>
                       </div>
                     </div>
                   </div>
                 </div>
 
-                {/* Floating Achievement Notification */}
+                {/* Trust Badge Notification */}
                 <motion.div
                   initial={{ x: -200, opacity: 0 }}
                   animate={{ x: 0, opacity: 1 }}
@@ -503,10 +494,10 @@ export default function HeroSection() {
                   className="absolute -top-6 -right-6 gaming-card p-3 border-laser-green bg-laser-green/10"
                 >
                   <div className="gaming-mono text-xs text-laser-green">
-                    🏆 ACHIEVEMENT UNLOCKED
+                    ✅ AGÊNCIA VERIFICADA
                   </div>
                   <div className="gaming-mono text-xs font-bold">
-                    Welcome Bonus +100 XP
+                    95% Client Retention Rate
                   </div>
                 </motion.div>
               </motion.div>
@@ -517,13 +508,13 @@ export default function HeroSection() {
 
       {/* Ambient Gaming Particles */}
       <div className="absolute inset-0 pointer-events-none">
-        {Array.from({ length: 10 }).map((_, i) => (
+        {particlesData.map((particle, i) => (
           <motion.div
             key={i}
             className="absolute w-2 h-2 bg-neon-cyan rounded-full"
             initial={{
-              x: Math.random() * 1200,
-              y: Math.random() * 800,
+              x: particle.x,
+              y: particle.y,
               opacity: 0
             }}
             animate={{
@@ -531,9 +522,9 @@ export default function HeroSection() {
               opacity: [0, 1, 0]
             }}
             transition={{
-              duration: 3 + Math.random() * 2,
+              duration: particle.duration,
               repeat: Infinity,
-              delay: Math.random() * 5,
+              delay: particle.delay,
               ease: 'linear'
             }}
             style={{
