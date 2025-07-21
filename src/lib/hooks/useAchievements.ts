@@ -179,6 +179,28 @@ export const trackingHelpers = {
     achievementManager?.trackEvent('social_share', { platform, url })
   },
 
+  // Payment & Purchases
+  trackPurchase: (data: {
+    plan_id: string
+    amount: number
+    currency: string
+    billing_cycle: string
+  }) => {
+    achievementManager?.trackEvent('purchase_initiated', data)
+  },
+
+  trackPurchaseComplete: (data: {
+    subscription_id: string
+    plan_name: string
+    amount: number
+  }) => {
+    achievementManager?.trackEvent('purchase_completed', data)
+  },
+
+  trackCheckoutStep: (step: string, plan_id: string) => {
+    achievementManager?.trackEvent('checkout_step', { step, plan_id })
+  },
+
   // Gaming
   trackKonamiCode: () => {
     achievementManager?.triggerKonamiCode()

@@ -100,6 +100,47 @@ export async function POST(request: NextRequest) {
     // TODO: Save to database
     console.log('💾 Contact would be saved to database:', validatedData)
 
+    // CRM Integration
+    try {
+      const { crmManager } = await import('@/lib/crm/manager')
+      
+      // Transform to GamingLead format
+      const gamingLead = {
+        id: `lead_${Date.now()}`,
+        email: validatedData.email,
+        name: validatedData.name,
+        phone: validatedData.phone,
+        company: validatedData.company,
+        leadScore: body.lead_score || 0,
+        playerLevel: 'new_player' as const,
+        achievements: ['first_contact'],
+        powerUps: validatedData.powerUps || [],
+        projectType: body.project_type || 'custom',
+        budgetRange: body.budget_range || 'custom',
+        urgency: body.urgency || 'normal',
+        message: validatedData.message,
+        source: 'website',
+        campaign: body.campaign,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        syncStatus: 'pending' as const
+      }
+
+      // Sync with CRM asynchronously
+      crmManager.createLead(gamingLead).then(response => {
+        if (response.success) {
+          console.log('✅ Lead synced to CRM:', response.data)
+        } else {
+          console.error('❌ CRM sync failed:', response.error)
+        }
+      }).catch(error => {
+        console.error('❌ CRM sync error:', error)
+      })
+    } catch (crmError) {
+      // Don't fail the contact submission if CRM fails
+      console.error('❌ CRM integration error:', crmError)
+    }
+
     // Gaming response with achievements
     const achievements = []
     if (validatedData.powerUps && validatedData.powerUps.length > 0) {

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Send, Phone, Mail, MapPin, Clock, Shield, Zap, Code, Users } from 'lucide-react'
 import { useAchievements, trackingHelpers } from '@/lib/hooks/useAchievements'
@@ -39,8 +39,27 @@ export default function ContatoPage() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle')
   const [formErrors, setFormErrors] = useState<Record<string, string>>({})
+  const [selectedCombo, setSelectedCombo] = useState<string>('')
   
   const { } = useAchievements()
+
+  // Check URL params for pre-selected combo
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const urlParams = new URLSearchParams(window.location.search)
+      const combo = urlParams.get('combo')
+      const projectType = urlParams.get('project_type')
+      
+      if (combo) {
+        setSelectedCombo(combo)
+        setFormData(prev => ({
+          ...prev,
+          project_type: projectType || 'custom',
+          message: `Gostaria de solicitar orçamento para o combo ${combo}. `
+        }))
+      }
+    }
+  }, [])
 
   const contactInfo: ContactInfo[] = [
     {

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { useRouter } from 'next/navigation'
 import { 
   Crown, 
   Rocket,
@@ -213,6 +214,7 @@ export default function CombosPage() {
   const [activeTab, setActiveTab] = useState<'overview' | 'tech' | 'pricing'>('overview')
   const [mounted, setMounted] = useState(false)
   const { playContextMusic } = useAudio()
+  const router = useRouter()
 
   useEffect(() => {
     setMounted(true)
@@ -230,6 +232,32 @@ export default function CombosPage() {
   const handleTabChange = (tab: 'overview' | 'tech' | 'pricing') => {
     audioHelpers.playClick(false)
     setActiveTab(tab)
+  }
+
+  const handleQuoteRequest = (comboId?: string) => {
+    audioHelpers.playClick(true)
+    trackingHelpers.trackClick(`combo_quote_${comboId || 'custom'}`)
+    
+    // Navigate to contact page with combo pre-selected
+    const params = new URLSearchParams()
+    if (comboId) {
+      params.set('combo', comboId)
+      params.set('project_type', 'custom')
+    }
+    router.push(`/contato?${params.toString()}`)
+  }
+
+  const handleSpecialistContact = (comboId?: string) => {
+    audioHelpers.playClick(false)
+    trackingHelpers.trackClick(`combo_specialist_${comboId || 'custom'}`)
+    
+    // Navigate to WhatsApp with pre-filled message
+    const message = comboId 
+      ? `Olá! Gostaria de falar sobre o combo ${COMBOS.find(c => c.id === comboId)?.name || 'personalizado'} que vi no site.`
+      : 'Olá! Gostaria de criar um combo personalizado para meu projeto.'
+    
+    const whatsappUrl = `https://wa.me/5511956534963?text=${encodeURIComponent(message)}`
+    window.open(whatsappUrl, '_blank')
   }
 
   if (!mounted) return null
@@ -653,10 +681,7 @@ export default function CombosPage() {
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                       onMouseEnter={audioHelpers.playHover}
-                      onClick={() => {
-                        audioHelpers.playClick(true)
-                        trackingHelpers.trackClick(`combo_cta_${combo.id}`)
-                      }}
+                      onClick={() => handleQuoteRequest(combo.id)}
                       className="gaming-button text-lg px-8 py-4"
                     >
                       <span className="relative z-10">SOLICITAR ORÇAMENTO</span>
@@ -666,10 +691,7 @@ export default function CombosPage() {
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                       onMouseEnter={audioHelpers.playHover}
-                      onClick={() => {
-                        audioHelpers.playClick(false)
-                        trackingHelpers.trackClick(`combo_contact_${combo.id}`)
-                      }}
+                      onClick={() => handleSpecialistContact(combo.id)}
                       className="gaming-card px-8 py-4 text-lg font-semibold text-neon-cyan border-neon-cyan hover:text-controller-black hover:bg-neon-cyan transition-all duration-300"
                     >
                       FALAR COM ESPECIALISTA
@@ -700,10 +722,7 @@ export default function CombosPage() {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onMouseEnter={audioHelpers.playHover}
-            onClick={() => {
-              audioHelpers.playClick(true)
-              trackingHelpers.trackClick('combos_custom_cta')
-            }}
+            onClick={() => handleQuoteRequest()}
             className="gaming-button text-lg px-8 py-4"
           >
             <span className="relative z-10">CRIAR COMBO PERSONALIZADO</span>

@@ -1,12 +1,12 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
-import { LucideIcon } from 'lucide-react'
+import { LucideIcon, Check } from 'lucide-react'
 import { trackingHelpers } from '@/lib/hooks/useAchievements'
 import { audioHelpers } from '@/lib/hooks/useAudio'
 
-export type PowerUpRarity = 'common' | 'rare' | 'epic' | 'legendary'
+export type PowerUpRarity = 'common' | 'rare' | 'epic' | 'legendary' | 'mythic'
 
 interface PowerUpCardProps {
   id?: string
@@ -24,6 +24,10 @@ interface PowerUpCardProps {
   isUnlocked?: boolean
   onSelect?: () => void
   className?: string
+  fullDescription?: string
+  features?: string[]
+  isExpanded?: boolean
+  onToggleExpansion?: () => void
 }
 
 const rarityConfig = {
@@ -54,6 +58,13 @@ const rarityConfig = {
     gradient: 'from-plasma-yellow/30 to-plasma-yellow/10',
     text: 'text-plasma-yellow',
     accent: 'text-plasma-yellow'
+  },
+  mythic: {
+    border: 'border-laser-green/80',
+    glow: 'shadow-[0_0_30px_rgba(34,197,94,0.7)]',
+    gradient: 'from-laser-green/30 to-laser-green/10',
+    text: 'text-laser-green',
+    accent: 'text-laser-green'
   }
 }
 
@@ -68,9 +79,17 @@ export default function PowerUpCard({
   price,
   isUnlocked = true,
   onSelect,
-  className = ''
+  className = '',
+  fullDescription,
+  features,
+  isExpanded: controlledExpanded,
+  onToggleExpansion
 }: PowerUpCardProps) {
   const config = rarityConfig[rarity]
+  const [internalExpanded, setInternalExpanded] = useState(false)
+  
+  // Use controlled state if provided, otherwise use internal state
+  const isExpanded = controlledExpanded !== undefined ? controlledExpanded : internalExpanded
 
   // Track power-up view on mount
   useEffect(() => {
@@ -78,6 +97,15 @@ export default function PowerUpCard({
       trackingHelpers.trackPowerUpView(id)
     }
   }, [id])
+
+  const toggleExpansion = () => {
+    if (onToggleExpansion) {
+      onToggleExpansion()
+    } else {
+      setInternalExpanded(!internalExpanded)
+      audioHelpers.playClick(false)
+    }
+  }
 
   return (
     <motion.div
@@ -180,9 +208,9 @@ export default function PowerUpCard({
         ))}
       </div>
 
-      {/* Acquisition Info */}
+      {/* Action Buttons */}
       <div className="border-t border-led-white/20 pt-4">
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between mb-3">
           {price ? (
             <div className="gaming-mono text-sm font-bold text-laser-green">
               {price}
@@ -210,17 +238,108 @@ export default function PowerUpCard({
               if (isUnlocked) {
                 audioHelpers.playClick(false)
                 if (id) {
-                  trackingHelpers.trackClick(`powerup_equip_${id}`)
+                  trackingHelpers.trackClick(`powerup_choose_${id}`)
+                  trackingHelpers.trackPowerUpSelect(id)
                 }
+                
+                // Open WhatsApp with interest message
+                const message = `🎮 Olá! Tenho interesse no power-up *${name}* ${price ? `por ${price}` : ''}.
+
+📋 *Detalhes:*
+• ${description}
+${price ? `• Valor: ${price}` : ''}
+• Level: ${level}
+
+Gostaria de saber mais informações e como proceder com a contratação. Quando podemos conversar?`
+                
+                const whatsappUrl = `https://wa.me/5511956534963?text=${encodeURIComponent(message)}`
+                window.open(whatsappUrl, '_blank')
               } else {
                 audioHelpers.playError()
               }
             }}
           >
-            {isUnlocked ? 'EQUIP' : 'LOCKED'}
+            {isUnlocked ? 'ESCOLHER' : 'LOCKED'}
           </motion.button>
         </div>
+
+        {/* Ver Detalhes Button */}
+        {(fullDescription || features) && (
+          <motion.button
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            className={`
+              w-full px-3 py-2 rounded-md gaming-mono text-xs font-bold
+              border ${config.border} ${config.text} bg-transparent
+              hover:${config.gradient.replace('/10', '/20').replace('/5', '/10')} hover:bg-gradient-to-r
+              transition-all duration-200
+              ${isExpanded ? 'border-opacity-100' : 'border-opacity-50'}
+            `}
+            onMouseEnter={audioHelpers.playHover}
+            onClick={(e) => {
+              e.stopPropagation()
+              toggleExpansion()
+              if (id) {
+                trackingHelpers.trackClick(`powerup_details_${id}`)
+              }
+            }}
+          >
+            {isExpanded ? 'OCULTAR DETALHES' : 'VER DETALHES'}
+          </motion.button>
+        )}
       </div>
+
+      {/* Expanded Details */}
+      <motion.div
+        initial={false}
+        animate={{ 
+          height: isExpanded ? 'auto' : 0,
+          opacity: isExpanded ? 1 : 0 
+        }}
+        transition={{ duration: 0.3, ease: 'easeInOut' }}
+        className="overflow-hidden"
+      >
+        {(fullDescription || features) && (
+          <div className="border-t border-led-white/10 pt-4 mt-4">
+            {/* Full Description */}
+            {fullDescription && (
+              <div className="mb-4">
+                <h4 className={`gaming-mono text-xs font-bold ${config.text} mb-2 uppercase`}>
+                  Descrição Completa
+                </h4>
+                <p className="gaming-subtitle text-xs text-led-white/80 leading-relaxed">
+                  {fullDescription}
+                </p>
+              </div>
+            )}
+
+            {/* Features List */}
+            {features && features.length > 0 && (
+              <div>
+                <h4 className={`gaming-mono text-xs font-bold ${config.text} mb-2 uppercase`}>
+                  Recursos Inclusos
+                </h4>
+                <div className="space-y-1">
+                  {features.map((feature, index) => (
+                    <motion.div
+                      key={index}
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: index * 0.05 }}
+                      className="flex items-center space-x-2"
+                    >
+                      <Check size={12} className={`${config.text} flex-shrink-0`} />
+                      <span className="gaming-mono text-xs text-led-white/70">
+                        {feature}
+                      </span>
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+      </motion.div>
 
       {/* Hover Effect Overlay */}
       <div className={`

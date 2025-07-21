@@ -260,7 +260,7 @@ export class IPSecurity {
     
     // In production, only block known malicious IPs
     // Remove localhost and private network blocking for development
-    const PRODUCTION_BLOCKED_IPS = new Set([
+    const PRODUCTION_BLOCKED_IPS = new Set<string>([
       // Add specific malicious IPs here when needed
     ])
     
@@ -309,7 +309,7 @@ export class SecurityMonitor {
   }
 
   static logSecurityEvent(event: {
-    type: 'suspicious_input' | 'rate_limit' | 'blocked_ip' | 'xss_attempt' | 'bot_detected'
+    type: 'suspicious_input' | 'rate_limit' | 'blocked_ip' | 'xss_attempt' | 'bot_detected' | 'webhook_rate_limit' | 'webhook_validation_failed'
     ip: string
     userAgent?: string
     details: Record<string, unknown>

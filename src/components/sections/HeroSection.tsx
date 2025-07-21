@@ -252,7 +252,198 @@ export default function HeroSection() {
                     </div>
                   </div>
 
-                  <div className="pt-12 space-y-6">
+                  <div className="pt-8 space-y-6">
+                    {/* Pixel Art Player Characters Gallery */}
+                    <div className="flex justify-center mb-6">
+                      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                        {/* Starter Player - "CodeKid" */}
+                        <motion.div
+                          initial={{ scale: 0, rotate: 180 }}
+                          animate={{ scale: 1, rotate: 0 }}
+                          transition={{ delay: 1, duration: 0.8, ease: 'easeOut' }}
+                          className="relative text-center"
+                        >
+                          <div className="w-12 h-16 relative mx-auto mb-2">
+                            {/* Head - Simple */}
+                            <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-4 h-4 bg-gradient-to-b from-amber-200 to-amber-300 border border-amber-400" style={{clipPath: 'polygon(25% 0%, 75% 0%, 100% 25%, 100% 75%, 75% 100%, 25% 100%, 0% 75%, 0% 25%)'}} />
+                            
+                            {/* Eyes */}
+                            <div className="absolute top-1 left-1/2 transform -translate-x-1/2 flex space-x-0.5">
+                              <div className="w-0.5 h-0.5 bg-black rounded-full"></div>
+                              <div className="w-0.5 h-0.5 bg-black rounded-full"></div>
+                            </div>
+                            
+                            {/* Body - Basic */}
+                            <div className="absolute top-4 left-1/2 transform -translate-x-1/2 w-6 h-6 bg-gradient-to-b from-led-white to-gray-200 border border-gray-300" style={{clipPath: 'polygon(15% 0%, 85% 0%, 100% 15%, 100% 85%, 85% 100%, 15% 100%, 0% 85%, 0% 15%)'}} />
+                            
+                            {/* Arms */}
+                            <div className="absolute top-5 left-1 w-2 h-1.5 bg-gradient-to-r from-led-white to-gray-200 border border-gray-300 rounded-sm"></div>
+                            <div className="absolute top-5 right-1 w-2 h-1.5 bg-gradient-to-r from-led-white to-gray-200 border border-gray-300 rounded-sm"></div>
+                            
+                            {/* Legs */}
+                            <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 flex space-x-0.5">
+                              <div className="w-1.5 h-4 bg-gradient-to-b from-blue-400 to-blue-500 border border-blue-500/50 rounded-sm"></div>
+                              <div className="w-1.5 h-4 bg-gradient-to-b from-blue-400 to-blue-500 border border-blue-500/50 rounded-sm"></div>
+                            </div>
+                          </div>
+                          <div className="gaming-mono text-xs text-led-white/80 font-bold">CODEKID</div>
+                          <div className="gaming-mono text-xs text-led-white/50">Starter Pack</div>
+                        </motion.div>
+
+                        {/* Pro Player - "DevMaster" */}
+                        <motion.div
+                          initial={{ scale: 0, rotate: 180 }}
+                          animate={{ scale: 1, rotate: 0 }}
+                          transition={{ delay: 1.2, duration: 0.8, ease: 'easeOut' }}
+                          className="relative text-center"
+                        >
+                          <div className="w-14 h-18 relative mx-auto mb-2">
+                            {/* Head - Pro */}
+                            <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-5 h-5 bg-gradient-to-b from-electric-blue to-neon-cyan border border-electric-blue" style={{clipPath: 'polygon(20% 0%, 80% 0%, 100% 20%, 100% 80%, 80% 100%, 20% 100%, 0% 80%, 0% 20%)'}} />
+                            
+                            {/* Eyes */}
+                            <div className="absolute top-1 left-1/2 transform -translate-x-1/2 flex space-x-1">
+                              <div className="w-1 h-1 bg-plasma-yellow rounded-full"></div>
+                              <div className="w-1 h-1 bg-plasma-yellow rounded-full"></div>
+                            </div>
+                            
+                            {/* Body - Enhanced */}
+                            <div className="absolute top-5 left-1/2 transform -translate-x-1/2 w-7 h-7 bg-gradient-to-b from-electric-blue to-neon-cyan border border-electric-blue/50" style={{clipPath: 'polygon(10% 0%, 90% 0%, 100% 10%, 100% 90%, 90% 100%, 10% 100%, 0% 90%, 0% 10%)'}} />
+                            
+                            {/* Arms */}
+                            <div className="absolute top-6 left-0.5 w-2.5 h-2 bg-gradient-to-r from-electric-blue to-neon-cyan border border-electric-blue/50 rounded-sm"></div>
+                            <div className="absolute top-6 right-0.5 w-2.5 h-2 bg-gradient-to-r from-electric-blue to-neon-cyan border border-electric-blue/50 rounded-sm"></div>
+                            
+                            {/* Legs */}
+                            <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 flex space-x-1">
+                              <div className="w-2 h-5 bg-gradient-to-b from-gaming-purple to-magenta-power border border-gaming-purple/50 rounded-sm"></div>
+                              <div className="w-2 h-5 bg-gradient-to-b from-gaming-purple to-magenta-power border border-gaming-purple/50 rounded-sm"></div>
+                            </div>
+                          </div>
+                          <div className="gaming-mono text-xs text-electric-blue font-bold">DEVMASTER</div>
+                          <div className="gaming-mono text-xs text-led-white/50">Pro Guild</div>
+                          
+                          {/* Pro Glow */}
+                          <motion.div
+                            animate={{ 
+                              boxShadow: [
+                                '0 0 8px rgba(0,212,255,0.3)',
+                                '0 0 16px rgba(0,212,255,0.6)',
+                                '0 0 8px rgba(0,212,255,0.3)'
+                              ]
+                            }}
+                            transition={{ duration: 2, repeat: Infinity }}
+                            className="absolute inset-0 rounded-lg pointer-events-none"
+                          />
+                        </motion.div>
+
+                        {/* Elite Player - "CyberWarrior" */}
+                        <motion.div
+                          initial={{ scale: 0, rotate: 180 }}
+                          animate={{ scale: 1, rotate: 0 }}
+                          transition={{ delay: 1.4, duration: 0.8, ease: 'easeOut' }}
+                          className="relative text-center"
+                        >
+                          <div className="w-16 h-20 relative mx-auto mb-2">
+                            {/* Head - Elite with armor */}
+                            <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-6 h-6 bg-gradient-to-b from-gaming-purple to-magenta-power border-2 border-gaming-purple" style={{clipPath: 'polygon(20% 0%, 80% 0%, 100% 20%, 100% 80%, 80% 100%, 20% 100%, 0% 80%, 0% 20%)'}} />
+                            
+                            {/* Visor */}
+                            <div className="absolute top-1 left-1/2 transform -translate-x-1/2 w-4 h-2 bg-gradient-to-r from-neon-cyan to-electric-blue border border-neon-cyan rounded-sm"></div>
+                            
+                            {/* Body - Armored */}
+                            <div className="absolute top-6 left-1/2 transform -translate-x-1/2 w-8 h-8 bg-gradient-to-b from-gaming-purple to-magenta-power border-2 border-gaming-purple/70" style={{clipPath: 'polygon(10% 0%, 90% 0%, 100% 10%, 100% 90%, 90% 100%, 10% 100%, 0% 90%, 0% 10%)'}} />
+                            
+                            {/* Shoulder Pads */}
+                            <div className="absolute top-6 left-0 w-3 h-3 bg-gradient-to-r from-gaming-purple to-magenta-power border border-gaming-purple/50 rounded"></div>
+                            <div className="absolute top-6 right-0 w-3 h-3 bg-gradient-to-r from-gaming-purple to-magenta-power border border-gaming-purple/50 rounded"></div>
+                            
+                            {/* Arms */}
+                            <div className="absolute top-7 left-1 w-3 h-2 bg-gradient-to-r from-gaming-purple to-magenta-power border border-gaming-purple/50 rounded-sm"></div>
+                            <div className="absolute top-7 right-1 w-3 h-2 bg-gradient-to-r from-gaming-purple to-magenta-power border border-gaming-purple/50 rounded-sm"></div>
+                            
+                            {/* Legs */}
+                            <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 flex space-x-1">
+                              <div className="w-2 h-6 bg-gradient-to-b from-gaming-purple to-magenta-power border-2 border-gaming-purple/50 rounded-sm"></div>
+                              <div className="w-2 h-6 bg-gradient-to-b from-gaming-purple to-magenta-power border-2 border-gaming-purple/50 rounded-sm"></div>
+                            </div>
+                          </div>
+                          <div className="gaming-mono text-xs text-gaming-purple font-bold">CYBERWARRIOR</div>
+                          <div className="gaming-mono text-xs text-led-white/50">Elite Force</div>
+                          
+                          {/* Elite Glow */}
+                          <motion.div
+                            animate={{ 
+                              boxShadow: [
+                                '0 0 12px rgba(139,92,246,0.4)',
+                                '0 0 24px rgba(139,92,246,0.7)',
+                                '0 0 12px rgba(139,92,246,0.4)'
+                              ]
+                            }}
+                            transition={{ duration: 1.5, repeat: Infinity }}
+                            className="absolute inset-0 rounded-lg pointer-events-none"
+                          />
+                        </motion.div>
+
+                        {/* Legendary Player - "QuantumLord" */}
+                        <motion.div
+                          initial={{ scale: 0, rotate: 180 }}
+                          animate={{ scale: 1, rotate: 0 }}
+                          transition={{ delay: 1.6, duration: 0.8, ease: 'easeOut' }}
+                          className="relative text-center"
+                        >
+                          <div className="w-18 h-22 relative mx-auto mb-2">
+                            {/* Crown */}
+                            <div className="absolute -top-1 left-1/2 transform -translate-x-1/2 w-8 h-2 bg-gradient-to-r from-plasma-yellow to-yellow-300 border border-plasma-yellow rounded-t" style={{clipPath: 'polygon(0% 50%, 20% 0%, 40% 50%, 60% 0%, 80% 50%, 100% 100%, 0% 100%)'}} />
+                            
+                            {/* Head - Legendary */}
+                            <div className="absolute top-1 left-1/2 transform -translate-x-1/2 w-7 h-7 bg-gradient-to-b from-plasma-yellow to-yellow-300 border-2 border-plasma-yellow" style={{clipPath: 'polygon(15% 0%, 85% 0%, 100% 15%, 100% 85%, 85% 100%, 15% 100%, 0% 85%, 0% 15%)'}} />
+                            
+                            {/* Energy Eyes */}
+                            <div className="absolute top-3 left-1/2 transform -translate-x-1/2 flex space-x-1">
+                              <div className="w-1.5 h-1.5 bg-white border border-plasma-yellow rounded-full animate-pulse"></div>
+                              <div className="w-1.5 h-1.5 bg-white border border-plasma-yellow rounded-full animate-pulse"></div>
+                            </div>
+                            
+                            {/* Body - Legendary Armor */}
+                            <div className="absolute top-8 left-1/2 transform -translate-x-1/2 w-9 h-9 bg-gradient-to-b from-plasma-yellow to-yellow-300 border-2 border-plasma-yellow/70" style={{clipPath: 'polygon(10% 0%, 90% 0%, 100% 10%, 100% 90%, 90% 100%, 10% 100%, 0% 90%, 0% 10%)'}} />
+                            
+                            {/* Energy Core */}
+                            <div className="absolute top-10 left-1/2 transform -translate-x-1/2 w-3 h-3 bg-white border-2 border-plasma-yellow rounded-full animate-pulse"></div>
+                            
+                            {/* Legendary Shoulder Guards */}
+                            <div className="absolute top-8 -left-1 w-4 h-4 bg-gradient-to-r from-plasma-yellow to-yellow-300 border-2 border-plasma-yellow/50 rounded-lg"></div>
+                            <div className="absolute top-8 -right-1 w-4 h-4 bg-gradient-to-r from-plasma-yellow to-yellow-300 border-2 border-plasma-yellow/50 rounded-lg"></div>
+                            
+                            {/* Arms */}
+                            <div className="absolute top-9 left-0 w-4 h-3 bg-gradient-to-r from-plasma-yellow to-yellow-300 border-2 border-plasma-yellow/50 rounded-sm"></div>
+                            <div className="absolute top-9 right-0 w-4 h-3 bg-gradient-to-r from-plasma-yellow to-yellow-300 border-2 border-plasma-yellow/50 rounded-sm"></div>
+                            
+                            {/* Legs */}
+                            <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 flex space-x-1">
+                              <div className="w-2.5 h-7 bg-gradient-to-b from-plasma-yellow to-yellow-300 border-2 border-plasma-yellow/50 rounded-sm"></div>
+                              <div className="w-2.5 h-7 bg-gradient-to-b from-plasma-yellow to-yellow-300 border-2 border-plasma-yellow/50 rounded-sm"></div>
+                            </div>
+                          </div>
+                          <div className="gaming-mono text-xs text-plasma-yellow font-bold">QUANTUMLORD</div>
+                          <div className="gaming-mono text-xs text-led-white/50">Legendary Tier</div>
+                          
+                          {/* Legendary Glow */}
+                          <motion.div
+                            animate={{ 
+                              boxShadow: [
+                                '0 0 15px rgba(255,234,0,0.5)',
+                                '0 0 30px rgba(255,234,0,0.8)',
+                                '0 0 15px rgba(255,234,0,0.5)'
+                              ]
+                            }}
+                            transition={{ duration: 1, repeat: Infinity }}
+                            className="absolute inset-0 rounded-lg pointer-events-none"
+                          />
+                        </motion.div>
+                      </div>
+                    </div>
+
                     {/* Business Potential Bar */}
                     <div className="hud-element">
                       <div className="flex justify-between items-center mb-2">
@@ -299,26 +490,6 @@ export default function HeroSection() {
                           {hudStats.achievements}
                         </div>
                         <div className="gaming-mono text-xs opacity-70">ACHIEVEMENTS</div>
-                      </div>
-                    </div>
-
-                    {/* Power-ups Indicator */}
-                    <div className="border-t border-neon-cyan/30 pt-4">
-                      <div className="gaming-mono text-xs mb-3 text-center text-neon-cyan">
-                        ACTIVE POWER-UPS
-                      </div>
-                      <div className="flex justify-center space-x-2">
-                        {['AI', 'WEB', 'API', 'UX'].map((powerup, index) => (
-                          <motion.div
-                            key={powerup}
-                            initial={{ scale: 0, rotate: 180 }}
-                            animate={{ scale: 1, rotate: 0 }}
-                            transition={{ delay: 1.5 + index * 0.2, duration: 0.5 }}
-                            className="w-10 h-10 bg-gradient-gaming rounded border border-neon-cyan/50 flex items-center justify-center gaming-mono text-xs font-bold animate-glow"
-                          >
-                            {powerup}
-                          </motion.div>
-                        ))}
                       </div>
                     </div>
                   </div>

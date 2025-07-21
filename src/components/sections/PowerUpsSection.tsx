@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { Bot, Zap, Cpu, Brain, Search } from 'lucide-react'
@@ -13,54 +14,116 @@ const powerUps = [
     name: 'AI Companion',
     description: 'Chatbot inteligente com processamento de linguagem natural',
     icon: Bot,
-    rarity: 'epic' as const,
+    rarity: 'legendary' as const, // Dourado - IA premium
     level: 15,
     stats: { power: 95, efficiency: 88, innovation: 92 },
-    price: 'R$ 2.500'
+    price: 'R$ 1.500',
+    fullDescription: 'Chatbot inteligente com IA ChatGPT integrada, capaz de responder perguntas complexas, fazer atendimento automatizado 24/7 e integração com WhatsApp Business.',
+    features: [
+      'IA ChatGPT integrada',
+      'Atendimento 24/7 automatizado',
+      'Integração WhatsApp Business',
+      'Sistema de tickets inteligente',
+      'Treinamento personalizado',
+      'Dashboard de analytics',
+      'Histórico de conversas',
+      'Respostas inteligentes'
+    ]
   },
   {
     id: 'performance_boost',
     name: 'Turbo Engine',
     description: 'Otimização avançada de performance e velocidade',
     icon: Zap,
-    rarity: 'rare' as const,
+    rarity: 'rare' as const, // Azul elétrico - velocidade
     level: 12,
     stats: { power: 90, efficiency: 95, innovation: 75 },
-    price: 'R$ 1.800'
+    price: 'R$ 1.900',
+    fullDescription: 'Otimização completa de performance com CDN global, compressão avançada, cache inteligente e monitoramento em tempo real para máxima velocidade.',
+    features: [
+      'CDN global integrado',
+      'Compressão avançada de assets',
+      'Cache inteligente multicamada',
+      'Otimização de imagens automática',
+      'Minificação de código',
+      'Lazy loading avançado',
+      'Monitoramento de performance',
+      'Core Web Vitals otimizados'
+    ]
   },
   {
     id: 'ai_processor',
     name: 'Neural Core',
     description: 'Processamento de dados com machine learning avançado',
     icon: Cpu,
-    rarity: 'epic' as const,
+    rarity: 'epic' as const, // Roxo - tecnologia avançada
     level: 18,
     stats: { power: 92, efficiency: 87, innovation: 95 },
-    price: 'R$ 2.800'
+    price: 'R$ 3.200',
+    fullDescription: 'Sistema avançado de machine learning para análise preditiva, processamento de big data e automação inteligente de processos empresariais.',
+    features: [
+      'Machine Learning personalizado',
+      'Análise preditiva avançada',
+      'Processamento de big data',
+      'Automação inteligente',
+      'Reconhecimento de padrões',
+      'APIs de IA integradas',
+      'Modelos treináveis',
+      'Analytics comportamental'
+    ]
   },
   {
     id: 'smart_analytics',
     name: 'Mind Reader',
     description: 'Analytics inteligente com insights preditivos',
     icon: Brain,
-    rarity: 'rare' as const,
+    rarity: 'mythic' as const, // Verde - poder mítico
     level: 14,
     stats: { power: 88, efficiency: 92, innovation: 85 },
-    price: 'R$ 2.100'
+    price: 'R$ 1.650',
+    fullDescription: 'Sistema avançado de analytics com dashboards interativos, relatórios automatizados, análise de comportamento do usuário e métricas de engajamento.',
+    features: [
+      'Dashboards interativos',
+      'Relatórios automatizados',
+      'Análise de comportamento',
+      'Funis de conversão',
+      'Métricas de engajamento',
+      'Integração Google Analytics',
+      'Facebook Pixel avançado',
+      'ROI e métricas de negócio'
+    ]
   },
   {
     id: 'seo_optimizer',
     name: 'Search Master',
     description: 'Otimização SEO com IA para máxima visibilidade',
     icon: Search,
-    rarity: 'rare' as const,
+    rarity: 'common' as const, // Branco - base essencial
     level: 13,
     stats: { power: 82, efficiency: 90, innovation: 78 },
-    price: 'R$ 1.900'
+    price: 'R$ 2.800',
+    fullDescription: 'Estratégia completa de SEO com auditoria técnica, pesquisa de palavras-chave, otimização on-page, criação de conteúdo otimizado e monitoramento de resultados.',
+    features: [
+      'Auditoria técnica completa',
+      'Pesquisa de palavras-chave',
+      'Otimização on-page',
+      'Criação de conteúdo SEO',
+      'Link building estratégico',
+      'Monitoramento de rankings',
+      'Relatórios mensais',
+      'Google Analytics avançado'
+    ]
   }
 ]
 
 export default function PowerUpsSection() {
+  const [expandedPowerUp, setExpandedPowerUp] = useState<string | null>(null)
+
+  const togglePowerUpExpansion = (powerUpId: string) => {
+    setExpandedPowerUp(prev => prev === powerUpId ? null : powerUpId)
+    audioHelpers.playClick(false)
+  }
+
   return (
     <section className="py-20 px-6 relative overflow-hidden">
       {/* Background Circuit Pattern */}
@@ -148,7 +211,7 @@ export default function PowerUpsSection() {
         </motion.div>
 
         {/* Power-ups Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
           {powerUps.map((powerUp, index) => (
             <motion.div
               key={powerUp.id}
@@ -163,6 +226,8 @@ export default function PowerUpsSection() {
             >
               <PowerUpCard
                 {...powerUp}
+                isExpanded={expandedPowerUp === powerUp.id}
+                onToggleExpansion={() => togglePowerUpExpansion(powerUp.id)}
                 onSelect={() => {
                   console.log(`Selected power-up: ${powerUp.name}`)
                   trackingHelpers.trackPowerUpSelect(powerUp.id)
