@@ -91,7 +91,10 @@ export async function POST(request: NextRequest) {
       to: process.env.FROM_EMAIL || 'contact@playcode.agency',
       from: process.env.FROM_EMAIL || 'noreply@playcode.agency',
       subject: `🎮 Nova missão recebida: ${validatedData.name}`,
-      html: generateEmailHTML(validatedData)
+      html: generateEmailHTML({
+        ...validatedData,
+        approvalInstructions
+      } as any)
     }
 
     // TODO: Implement actual email sending with SendGrid
@@ -99,6 +102,36 @@ export async function POST(request: NextRequest) {
 
     // TODO: Save to database
     console.log('💾 Contact would be saved to database:', validatedData)
+
+    // Se tem informações suficientes para orçamento, incluir link para envio de aprovação
+    let approvalInstructions = ''
+    if (validatedData.name && validatedData.email && body.project_type && body.budget_range) {
+      approvalInstructions = `
+        
+        🎯 <strong>Para Equipe - Processo de Orçamento:</strong>
+        <div style="background: #2A2A3A; padding: 15px; border-radius: 8px; margin: 10px 0;">
+          <p>Cliente possui informações completas para orçamento:</p>
+          <ul>
+            <li>Nome: ${validatedData.name}</li>
+            <li>Email: ${validatedData.email}</li>
+            <li>Projeto: ${body.project_type}</li>
+            <li>Orçamento: ${body.budget_range}</li>
+            <li>Empresa: ${validatedData.company || 'Não informado'}</li>
+            <li>Telefone: ${validatedData.phone || 'Não informado'}</li>
+          </ul>
+          
+          <p><strong>Próximos passos:</strong></p>
+          <ol>
+            <li>Analisar requisitos e preparar orçamento detalhado</li>
+            <li>Usar API <code>/api/approval/send</code> para enviar proposta</li>
+            <li>Cliente receberá email com botões de Aprovar/Rejeitar</li>
+            <li>Notificação automática do resultado para equipe</li>
+          </ol>
+          
+          <p><em>Dados prontos para sistema de aprovação automática!</em></p>
+        </div>
+      `
+    }
 
     // CRM Integration (optional)
     try {
@@ -238,6 +271,8 @@ function generateEmailHTML(data: {
             <h3>⚡ Power-ups Selecionados:</h3>
             ${data.powerUps.map((powerUp: string) => `<div class="power-up">${powerUp}</div>`).join('')}
           ` : ''}
+          
+          ${(data as any).approvalInstructions || ''}
         </div>
         
         <div class="footer">

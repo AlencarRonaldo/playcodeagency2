@@ -27,7 +27,12 @@
       "Bash(pkill:*)",
       "Bash(true)",
       "Bash(grep:*)",
-      "WebFetch(domain:yukaichou.com)"
+      "WebFetch(domain:yukaichou.com)",
+      "Bash(find:*)",
+      "Bash(cat:*)",
+      "Bash(touch:*)",
+      "WebFetch(domain:nextjs.org)",
+      "Bash(npx playwright test:*)"
     ],
     "deny": []
   }

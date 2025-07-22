@@ -43,11 +43,12 @@ export default function ContatoPage() {
   
   const { } = useAchievements()
 
-  // Check URL params for pre-selected combo
+  // Check URL params for pre-selected combo or service
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const urlParams = new URLSearchParams(window.location.search)
       const combo = urlParams.get('combo')
+      const servico = urlParams.get('servico')
       const projectType = urlParams.get('project_type')
       
       if (combo) {
@@ -56,6 +57,12 @@ export default function ContatoPage() {
           ...prev,
           project_type: projectType || 'custom',
           message: `Gostaria de solicitar orçamento para o combo ${combo}. `
+        }))
+      } else if (servico) {
+        setFormData(prev => ({
+          ...prev,
+          project_type: servico,
+          message: `Gostaria de solicitar orçamento para o serviço de ${servico.replace('-', ' ')}. `
         }))
       }
     }

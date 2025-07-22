@@ -37,21 +37,37 @@ export default function MarioAutoPlay() {
         await marioMusicPlayer.play()
         setIsPlaying(true)
         setIsInitialized(true)
+        console.log('🎮 Música do Mario iniciada com sucesso!')
       } catch (error) {
         console.log('🎮 Erro ao tocar música do Mario:', error)
+        setIsInitialized(true) // Mark as initialized even if failed
+      }
+    }
+
+    // Tenta iniciar automaticamente primeiro
+    const tryAutoplay = async () => {
+      try {
+        console.log('🎮 Tentando autoplay...')
+        await startMarioMusic()
+      } catch (error) {
+        console.log('🎮 Autoplay bloqueado, aguardando interação do usuário')
       }
     }
 
     // Se não conseguir (política de autoplay), tocar no primeiro clique
     const handleFirstInteraction = () => {
       if (!isInitialized) {
+        console.log('🎮 Primeira interação detectada!')
         startMarioMusic()
-        // Remove os listeners depois do primeiro clique
-        document.removeEventListener('click', handleFirstInteraction)
-        document.removeEventListener('keydown', handleFirstInteraction)
-        document.removeEventListener('touchstart', handleFirstInteraction)
       }
+      // Remove os listeners depois do primeiro clique
+      document.removeEventListener('click', handleFirstInteraction)
+      document.removeEventListener('keydown', handleFirstInteraction)
+      document.removeEventListener('touchstart', handleFirstInteraction)
     }
+
+    // Tenta autoplay primeiro
+    tryAutoplay()
 
     // Adiciona listeners para primeira interação do usuário
     document.addEventListener('click', handleFirstInteraction)

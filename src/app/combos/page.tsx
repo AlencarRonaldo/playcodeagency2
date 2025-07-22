@@ -28,7 +28,7 @@ import { trackingHelpers } from '@/lib/hooks/useAchievements'
 
 interface Technology {
   name: string
-  category: 'frontend' | 'backend' | 'database' | 'hosting' | 'security' | 'monitoring'
+  category: 'frontend' | 'backend' | 'database' | 'hosting' | 'security' | 'monitoring' | 'marketing'
   description: string
 }
 
@@ -55,121 +55,130 @@ interface Combo {
 
 const COMBOS: Combo[] = [
   {
-    id: 'startup-essentials',
-    name: 'Startup Essentials',
-    subtitle: 'VELOCIDADE MÁXIMA',
-    description: 'Stack otimizado para startups que precisam validar ideias rapidamente com orçamento limitado',
+    id: 'startup-accelerator',
+    name: 'Startup Accelerator',
+    subtitle: 'OFERTA LIMITADA - 22% OFF',
+    description: 'Business One + Search Master + Suporte Prioritário - Combo perfeito para empresas que querem resultado rápido no digital',
     icon: Rocket,
     rarity: 'rare',
     targetAudience: 'Startups e PMEs',
-    setupCost: 'R$ 2.500 - R$ 5.000',
-    monthlyCost: 'R$ 150 - R$ 300/mês',
-    developmentCost: 'R$ 80 - R$ 120/hora',
-    timeline: '2-4 semanas',
-    sla: '99% uptime',
+    setupCost: 'R$ 3.997 (único)',
+    monthlyCost: 'R$ 397/ano (renovação)',
+    developmentCost: 'De R$ 5.097 por R$ 3.997 (-22%)',
+    timeline: '7 dias + SEO setup',
+    sla: '99.2% uptime',
     roi: '3-6 meses',
-    scalability: '1K-10K usuários',
+    scalability: '1 site profissional',
     technologies: [
-      { name: 'Next.js 15 + React 19', category: 'frontend', description: 'Framework moderno com TypeScript' },
-      { name: 'Tailwind CSS 4', category: 'frontend', description: 'Styling utilitário e responsivo' },
-      { name: 'Supabase', category: 'database', description: 'PostgreSQL com auth integrado' },
-      { name: 'Vercel', category: 'hosting', description: 'Deploy automático e escalável' },
-      { name: 'NextAuth.js', category: 'security', description: 'Autenticação simplificada' },
-      { name: 'Vercel Analytics', category: 'monitoring', description: 'Métricas de performance' }
+      { name: 'Website Profissional', category: 'frontend', description: 'One-page responsiva e otimizada' },
+      { name: 'Hospedagem Premium', category: 'hosting', description: '1 ano de hospedagem incluído' },
+      { name: 'SEO Avançado', category: 'frontend', description: 'Auditoria SEO + palavras-chave + link building' },
+      { name: 'Google My Business', category: 'marketing', description: 'Presença local otimizada' },
+      { name: 'Suporte Prioritário', category: 'backend', description: 'Resposta em 1 hora + backup diário' },
+      { name: 'Analytics Pro', category: 'monitoring', description: 'Relatórios mensais de performance' }
     ],
     benefits: [
-      'Deploy em minutos com zero configuração',
-      'Escalabilidade automática sem intervenção',
-      'Stack unificada reduz complexidade',
-      'Comunidade ativa e documentação excelente',
-      'Prototipagem e iteração ultra-rápida'
+      'Site profissional entregue em 7 dias',
+      'SEO otimizado para rankeamento rápido',
+      'Suporte prioritário com resposta rápida',
+      'Economia de R$ 1.100 (22%) no pacote',
+      'Google My Business configurado',
+      '5 emails profissionais incluídos',
+      'Garantia de 6 meses de suporte grátis'
     ],
     useCases: [
-      'Landing pages e sites institucionais',
-      'MVPs e protótipos para validação',
-      'E-commerce básico e catálogos',
-      'Dashboards administrativos',
-      'Apps mobile com Expo/React Native'
+      'Consultores e profissionais liberais',
+      'Pequenas empresas locais',
+      'Startups validando produto/mercado',
+      'Negócios que precisam de presença digital urgente',
+      'Empresas migrando do offline para online'
     ],
-    addOns: ['OpenAI API + Vercel AI SDK', 'Stripe + Mercado Pago', 'Resend + React Email', 'Cloudinary', 'Expo + React Native']
+    addOns: ['5 Emails profissionais', 'Integração WhatsApp Business', 'Formulário inteligente', 'Backup semanal']
   },
   {
-    id: 'corporate-powerhouse',
-    name: 'Corporate Powerhouse',
-    subtitle: 'PERFORMANCE + SEGURANÇA',
-    description: 'Solução robusta para empresas que demandam alta performance, segurança e confiabilidade',
-    icon: Shield,
+    id: 'business-growth',
+    name: 'Business Growth',
+    subtitle: 'MAIS VENDIDO - 20% OFF',
+    description: 'Pro Guild + AI Companion + Mind Reader - Combo ideal para empresas em fase de crescimento acelerado',
+    icon: Target,
     rarity: 'epic',
-    targetAudience: 'Empresas Médias/Corporativas',
-    setupCost: 'R$ 8.000 - R$ 15.000',
-    monthlyCost: 'R$ 500 - R$ 1.200/mês',
-    developmentCost: 'R$ 120 - R$ 180/hora',
-    timeline: '6-12 semanas',
-    sla: '99.9% uptime',
-    roi: '6-12 meses',
-    scalability: '10K-100K usuários',
+    targetAudience: 'Empresas em Crescimento',
+    setupCost: 'R$ 4.497 (setup)',
+    monthlyCost: 'R$ 497/mês (recorrente)',
+    developmentCost: 'De R$ 5.647 por R$ 4.497 (-20%)',
+    timeline: '7 dias + IA setup',
+    sla: '99.5% uptime',
+    roi: '6-9 meses',
+    scalability: '2 sites profissionais',
     technologies: [
-      { name: 'Next.js + TanStack Query', category: 'frontend', description: 'Performance otimizada com cache inteligente' },
-      { name: 'Node.js + Fastify', category: 'backend', description: 'Backend ultra-rápido e eficiente' },
-      { name: 'PostgreSQL + Redis', category: 'database', description: 'Banco relacional com cache distribuído' },
-      { name: 'AWS + CloudFront', category: 'hosting', description: 'Infraestrutura enterprise na nuvem' },
-      { name: 'Auth0 + JWT', category: 'security', description: 'Autenticação enterprise-grade' },
-      { name: 'Sentry + DataDog', category: 'monitoring', description: 'Observabilidade completa' }
+      { name: 'Website Completo', category: 'frontend', description: 'Até 5 páginas profissionais' },
+      { name: 'APIs Customizadas', category: 'backend', description: 'Até 5 APIs para integrações' },
+      { name: 'IA ChatGPT', category: 'backend', description: 'Chatbot inteligente 24/7' },
+      { name: 'Analytics BI', category: 'monitoring', description: 'Dashboards interativos + ROI' },
+      { name: 'Segurança Avançada', category: 'security', description: 'Monitoramento 24/7' },
+      { name: 'Suporte Técnico', category: 'backend', description: 'Suporte técnico especializado' }
     ],
     benefits: [
-      'Performance otimizada com CDN global',
-      'Segurança enterprise-grade com compliance',
-      'Monitoring e observabilidade completa',
-      'Escalabilidade horizontal automática',
-      'Testes automatizados e CI/CD integrado'
+      'Website completo com até 5 páginas',
+      'Atendimento automatizado com IA 24/7',
+      'Business Intelligence para decisões',
+      'Economia de R$ 1.150 (20%) no pacote',
+      'Pode gerenciar 2 sites simultaneamente',
+      'Suporte técnico especializado incluído',
+      'Integração WhatsApp Business API',
+      'Monitoramento 24/7 com alertas'
     ],
     useCases: [
-      'Plataformas SaaS corporativas',
-      'E-commerce de médio/grande porte',
-      'Sistemas internos e ERPs',
-      'APIs públicas com alta demanda',
-      'Integração complexa com terceiros'
+      'Site institucional + landing pages',
+      'Site principal + blog corporativo',
+      'Matriz + filial (2 sites)',
+      'Múltiplas marcas da mesma empresa',
+      'Site + área do cliente + portfólio'
     ],
-    addOns: ['AWS SageMaker + ML', 'Socket.io + WebRTC', 'Algolia + Elasticsearch', 'Bull + Redis Queue', 'React Native + CodePush']
+    addOns: ['WhatsApp Business API', 'Facebook Pixel avançado', 'Integrações premium', 'Backup diário']
   },
   {
-    id: 'enterprise-ultimate',
-    name: 'Enterprise Ultimate',
-    subtitle: 'ESCALA GLOBAL',
-    description: 'Arquitetura distribuída para grandes corporações com requisitos de missão crítica',
+    id: 'enterprise-domination',
+    name: 'Enterprise Domination',
+    subtitle: 'PREMIUM - 13% OFF + BÔNUS',
+    description: 'Elite Force + Mobile App + Mind Reader - Solução enterprise para domínio total do mercado digital',
     icon: Crown,
     rarity: 'legendary',
-    targetAudience: 'Grandes Corporações',
-    setupCost: 'R$ 25.000 - R$ 80.000',
-    monthlyCost: 'R$ 2.000 - R$ 8.000/mês',
-    developmentCost: 'R$ 180 - R$ 300/hora',
-    timeline: '3-6 meses',
-    sla: '99.99% uptime',
-    roi: '12-24 meses',
-    scalability: '100K+ usuários',
+    targetAudience: 'Grandes Empresas',
+    setupCost: 'Consultar (setup)',
+    monthlyCost: 'R$ 7.997/mês (recorrente)',
+    developmentCost: 'De R$ 9.150 por R$ 7.997/mês (-13%)',
+    timeline: '8-16 semanas',
+    sla: '99.9% uptime',
+    roi: '12-18 meses',
+    scalability: '5+ sites + App Mobile',
     technologies: [
-      { name: 'Micro-frontends + Design System', category: 'frontend', description: 'Arquitetura modular e escalável' },
-      { name: 'Microserviços + Kubernetes', category: 'backend', description: 'Orquestração de containers enterprise' },
-      { name: 'Multi-database + Elasticsearch', category: 'database', description: 'Persistência distribuída e busca' },
-      { name: 'Multi-cloud + CDN Global', category: 'hosting', description: 'Distribuição geográfica resiliente' },
-      { name: 'Keycloak + SAML/OAuth', category: 'security', description: 'Identity management enterprise' },
-      { name: 'ELK + Prometheus + Grafana', category: 'monitoring', description: 'Observabilidade enterprise' }
+      { name: 'Plataforma Customizada', category: 'frontend', description: 'Sistema completo sob medida' },
+      { name: 'App Mobile Nativo', category: 'frontend', description: 'iOS + Android com performance otimizada' },
+      { name: 'Integração IA', category: 'backend', description: 'Machine Learning personalizado' },
+      { name: 'Business Intelligence', category: 'monitoring', description: 'Analytics avançado + insights' },
+      { name: 'DevOps Completo', category: 'backend', description: 'CI/CD + monitoramento 24/7' },
+      { name: 'Microserviços', category: 'backend', description: 'Arquitetura escalável' }
     ],
     benefits: [
-      'Arquitetura distribuída e resiliente',
-      'Performance global multi-região',
-      'Segurança máxima e compliance total',
-      'Escalabilidade ilimitada e automática',
-      'DevOps e automação completa'
+      'Plataforma enterprise customizada',
+      'App mobile nativo para iOS e Android',
+      'Business Intelligence avançado',
+      'Economia de R$ 1.153/mês (13%) no pacote',
+      'Arquitetura preparada para alta escala',
+      'Equipe dedicada com project manager',
+      'DevOps completo com CI/CD',
+      'Security audit mensal incluído',
+      'SLA garantido de 99.9% uptime'
     ],
     useCases: [
-      'Plataformas com milhões de usuários',
-      'Sistemas financeiros e bancários',
-      'Marketplaces de grande escala',
-      'Análise de big data e IoT',
-      'Aplicações mission-critical'
+      'Múltiplas filiais ou franquias',
+      'Ecossistema completo (5+ sites + app)',
+      'Marketplace + painel admin + mobile',
+      'Holding com várias empresas',
+      'Plataforma SaaS multi-tenant'
     ],
-    addOns: ['Custom ML + MLOps', 'Blockchain + Web3', 'AWS IoT + MQTT', 'Cloudflare Workers', 'Kafka + Apache Spark']
+    addOns: ['Load Balancing', 'Security Audit', 'Innovation Lab', 'Global CDN']
   }
 ]
 

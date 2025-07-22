@@ -94,15 +94,16 @@ export default function OnboardingSuccessPage() {
   };
 
   const handleScheduleCall = () => {
-    // Open calendar scheduling link
-    window.open('https://calendly.com/playcode-agency/kickoff', '_blank');
+    // Open WhatsApp for scheduling
+    const message = encodeURIComponent(`Olá! Acabei de completar o onboarding (ID: ${params.id}) e gostaria de agendar nossa reunião de kickoff. Quando podemos conversar?`);
+    window.open(`https://wa.me/551195653496?text=${message}`, '_blank');
   };
 
   const handleDownloadGuide = () => {
-    // Download project guide
+    // Download project guide PDF
     const link = document.createElement('a');
-    link.href = '/documents/project-guide.pdf';
-    link.download = 'Guia-do-Projeto-PlayCode.pdf';
+    link.href = '/api/download/project-guide';
+    link.download = 'Guia-do-Projeto-PlayCode-Agency.pdf';
     link.click();
   };
 
@@ -283,10 +284,10 @@ export default function OnboardingSuccessPage() {
               <Mail className="w-6 h-6 text-cyan-400 mx-auto mb-2" />
               <p className="text-white font-medium mb-1">Email</p>
               <a 
-                href="mailto:contato@playcode.com.br"
+                href="mailto:contato@playcodeagency.xyz"
                 className="text-cyan-400 hover:text-cyan-300 text-sm"
               >
-                contato@playcode.com.br
+                contato@playcodeagency.xyz
               </a>
             </div>
             
@@ -294,12 +295,12 @@ export default function OnboardingSuccessPage() {
               <Phone className="w-6 h-6 text-green-400 mx-auto mb-2" />
               <p className="text-white font-medium mb-1">WhatsApp</p>
               <a 
-                href="https://wa.me/5511999999999"
+                href="https://wa.me/551195653496"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-green-400 hover:text-green-300 text-sm"
               >
-                (11) 99999-9999
+                (11) 95653-4963
               </a>
             </div>
             

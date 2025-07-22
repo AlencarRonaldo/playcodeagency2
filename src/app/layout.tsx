@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Orbitron, Exo_2, JetBrains_Mono, Rajdhani } from "next/font/google";
 import "./globals.css";
+import "@/lib/polyfills";
 import AchievementProvider from "@/components/gaming/AchievementProvider";
 import KonamiEffects from "@/components/gaming/KonamiEffects";
 import WhatsAppFloat from "@/components/ui/WhatsAppFloat";

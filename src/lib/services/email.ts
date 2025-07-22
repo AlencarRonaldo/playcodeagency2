@@ -20,7 +20,7 @@ export class EmailService {
   private transporter: nodemailer.Transporter;
 
   constructor() {
-    this.transporter = nodemailer.createTransporter({
+    this.transporter = nodemailer.createTransport({
       host: process.env.SMTP_HOST,
       port: parseInt(process.env.SMTP_PORT || '587'),
       secure: process.env.SMTP_SECURE === 'true',
@@ -53,12 +53,41 @@ export class EmailService {
       onboardingUrl: data.onboardingUrl
     });
 
-    await this.transporter.sendMail({
-      from: `"PlayCode Agency 🎮" <${process.env.SMTP_FROM}>`,
-      to: data.to,
-      subject: `🎮 Bem-vindo à PlayCode! Vamos começar seu ${serviceNames[data.serviceType]}`,
-      html: template,
+    console.log('📧 Tentando enviar email para:', data.to);
+    console.log('📧 SMTP Config:', {
+      host: process.env.SMTP_HOST,
+      port: process.env.SMTP_PORT,
+      secure: process.env.SMTP_SECURE,
+      user: process.env.SMTP_USER,
+      from: process.env.SMTP_FROM
     });
+
+    try {
+      // Verificar conexão SMTP primeiro
+      await this.transporter.verify();
+      console.log('✅ Conexão SMTP verificada com sucesso');
+
+      const info = await this.transporter.sendMail({
+        from: `"PlayCode Agency 🎮" <${process.env.SMTP_FROM}>`,
+        to: data.to,
+        subject: `🎮 Bem-vindo à PlayCode! Vamos começar seu ${serviceNames[data.serviceType]}`,
+        html: template,
+      });
+
+      console.log('📧 Email enviado - Message ID:', info.messageId);
+      console.log('📧 Response:', info.response);
+      console.log('📧 Accepted:', info.accepted);
+      console.log('📧 Rejected:', info.rejected);
+      
+      if (info.rejected && info.rejected.length > 0) {
+        console.error('❌ Emails rejeitados:', info.rejected);
+        throw new Error(`Email rejeitado pelo servidor: ${info.rejected.join(', ')}`);
+      }
+
+    } catch (error) {
+      console.error('❌ Erro detalhado ao enviar email:', error);
+      throw error;
+    }
   }
 
   async sendFollowUpEmail(data: FollowUpEmailData): Promise<void> {

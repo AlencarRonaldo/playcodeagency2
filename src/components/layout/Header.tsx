@@ -17,7 +17,9 @@ import {
   Github,
   Linkedin,
   Twitter,
-  Star
+  Star,
+  Settings,
+  Shield
 } from 'lucide-react'
 import { audioHelpers } from '@/lib/hooks/useAudio'
 import { trackingHelpers } from '@/lib/hooks/useAchievements'
@@ -68,6 +70,12 @@ const NAVIGATION: NavItem[] = [
     href: '/combos',
     icon: Star,
     description: 'Stacks tecnológicos recomendados'
+  },
+  {
+    name: 'Admin',
+    href: '/admin',
+    icon: Shield,
+    description: 'Painel administrativo - Centro de comando'
   },
   {
     name: 'Contato',

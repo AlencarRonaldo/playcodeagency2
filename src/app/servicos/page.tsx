@@ -369,6 +369,9 @@ export default function ServicosPage() {
                         e.stopPropagation()
                         audioHelpers.playClick(true)
                         trackingHelpers.trackClick(`service_cta_${service.id}`)
+                        
+                        // Navigate to contact page with service context
+                        window.location.href = `/contato?servico=${service.id}`
                       }}
                       className="w-full gaming-button text-sm py-3 mb-2"
                     >

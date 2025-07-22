@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { memoryStore } from '../storage/memory-store';
 
 // Validation schemas
 const OnboardingDataSchema = z.object({
@@ -87,36 +88,81 @@ export class OnboardingService {
   }
 
   async getOnboarding(id: string): Promise<OnboardingRecord | null> {
-    // In a real implementation, fetch from database
-    // return await this.db.onboarding.findUnique({ where: { id } });
+    const data = memoryStore.getOnboarding(id);
     
-    console.log('Fetching onboarding record:', id);
-    return null; // Placeholder
+    if (!data) {
+      console.log('❌ Onboarding não encontrado:', id);
+      return null;
+    }
+
+    // Convert to OnboardingRecord format
+    return {
+      id: data.id,
+      customerId: 'customer_' + data.id,
+      customerName: data.customerName,
+      customerEmail: data.customerEmail,
+      customerPhone: data.customerPhone,
+      serviceType: data.serviceType as any,
+      planType: data.planType as any,
+      paymentId: 'payment_' + data.id,
+      amount: 797,
+      status: 'paid' as any,
+      formData: data.formData,
+      currentStep: 0,
+      completedSteps: [],
+      isCompleted: data.isCompleted,
+      createdAt: new Date(data.createdAt),
+      updatedAt: new Date(),
+      lastAccessDate: data.lastAccessDate ? new Date(data.lastAccessDate) : undefined,
+      completedAt: data.completedAt ? new Date(data.completedAt) : undefined
+    };
   }
 
   async updateOnboarding(id: string, updates: OnboardingUpdate): Promise<OnboardingRecord> {
     // Validate update data
     const validatedUpdates = OnboardingUpdateSchema.parse(updates);
 
-    const updateData = {
-      ...validatedUpdates,
-      updatedAt: new Date(),
-      lastAccessDate: new Date()
-    };
+    console.log('📝 Salvando dados do onboarding:', { id, formData: validatedUpdates.formData });
 
-    // If completing the onboarding
-    if (validatedUpdates.isCompleted) {
-      updateData.completedAt = new Date();
+    // Update in memory store
+    const updateData: any = {};
+    
+    if (validatedUpdates.formData) updateData.formData = validatedUpdates.formData;
+    if (validatedUpdates.currentStep !== undefined) updateData.currentStep = validatedUpdates.currentStep;
+    if (validatedUpdates.isCompleted !== undefined) {
+      updateData.isCompleted = validatedUpdates.isCompleted;
+      if (validatedUpdates.isCompleted) {
+        updateData.completedAt = new Date().toISOString();
+      }
     }
 
-    // In a real implementation, update in database
-    // const updated = await this.db.onboarding.update({
-    //   where: { id },
-    //   data: updateData
-    // });
+    const updated = memoryStore.updateOnboarding(id, updateData);
+    
+    if (!updated) {
+      throw new Error('Onboarding não encontrado para atualização');
+    }
 
-    console.log('Onboarding record updated:', { id, updates: updateData });
-    return {} as OnboardingRecord; // Placeholder
+    // Convert back to OnboardingRecord
+    return {
+      id: updated.id,
+      customerId: 'customer_' + updated.id,
+      customerName: updated.customerName,
+      customerEmail: updated.customerEmail,
+      customerPhone: updated.customerPhone,
+      serviceType: updated.serviceType as any,
+      planType: updated.planType as any,
+      paymentId: 'payment_' + updated.id,
+      amount: 797,
+      status: 'paid' as any,
+      formData: updated.formData,
+      currentStep: 0,
+      completedSteps: [],
+      isCompleted: updated.isCompleted,
+      createdAt: new Date(updated.createdAt),
+      updatedAt: new Date(),
+      lastAccessDate: updated.lastAccessDate ? new Date(updated.lastAccessDate) : undefined,
+      completedAt: updated.completedAt ? new Date(updated.completedAt) : undefined
+    };
   }
 
   async saveFormProgress(id: string, formData: Record<string, any>, currentStep: number): Promise<void> {

@@ -2,6 +2,27 @@ import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
 export function middleware(request: NextRequest) {
+  // Admin route protection
+  if (request.nextUrl.pathname.startsWith('/admin')) {
+    // Skip protection for login page
+    if (request.nextUrl.pathname === '/admin/login') {
+      // If already authenticated, redirect to admin dashboard
+      const adminAuth = request.cookies.get('playcode_admin')?.value
+      if (adminAuth) {
+        return NextResponse.redirect(new URL('/admin', request.url))
+      }
+    } else {
+      // Basic protection - in production, implement proper authentication
+      const adminAuth = request.cookies.get('playcode_admin')?.value
+      const isDev = process.env.NODE_ENV === 'development'
+      
+      // Allow in development or with admin cookie
+      if (!isDev && !adminAuth) {
+        return NextResponse.redirect(new URL('/admin/login', request.url))
+      }
+    }
+  }
+
   // Create response
   const response = NextResponse.next()
 
@@ -81,7 +102,9 @@ export const config = {
      * - _next/static (static files)
      * - _next/image (image optimization files)
      * - favicon.ico (favicon file)
+     * - sounds (audio files)
+     * - team (team images)
      */
-    '/((?!api|_next/static|_next/image|favicon.ico).*)',
+    '/((?!api|_next/static|_next/image|_next/webpack-hmr|favicon.ico|sounds|team|.*\\.).*)',
   ],
 }
