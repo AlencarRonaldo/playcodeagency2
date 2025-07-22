@@ -86,10 +86,10 @@ const PLANS: Plan[] = [
       { name: 'Landing Page Responsiva', included: true, description: 'Focado em vendas ou apresentação' },
       { name: 'SEO Básico', included: true, description: 'Otimização para mecanismos de busca' },
       { name: 'Formulário de Contato', included: true, description: 'Captação de leads básica' },
-      { name: 'Hospedagem 6 Meses Incluída', included: true, description: '6 meses de hosting gratuito' },
       { name: 'SSL Certificado', included: true, description: 'Segurança HTTPS' },
       { name: 'Analytics Básico', included: true, description: 'Google Analytics configurado' },
-      { name: 'Domínio .com.br', included: true, description: 'Registro de domínio incluído' },
+      { name: 'Hospedagem', included: false, description: 'Não incluído - Cliente contrata' },
+      { name: 'Domínio', included: false, description: 'Não incluído - Cliente contrata' },
       { name: 'WhatsApp Integration', included: true, description: 'Botão flutuante configurado' },
       { name: 'E-commerce', included: false },
       { name: 'Blog/CMS', included: false },
@@ -120,9 +120,9 @@ const PLANS: Plan[] = [
     },
     features: [
       { name: 'Website Profissional', included: true, description: '1 página dividida em seções personalizadas' },
-      { name: 'Domínio Incluído', included: true, description: 'Registro .com.br por 1 ano' },
-      { name: 'Hospedagem Premium', included: true, description: 'Hosting otimizado por 1 ano' },
       { name: 'SSL Certificado', included: true, description: 'Segurança HTTPS' },
+      { name: 'Hospedagem', included: false, description: 'Não incluído - Cliente contrata' },
+      { name: 'Domínio', included: false, description: 'Não incluído - Cliente contrata' },
       { name: 'Analytics Avançado', included: true, description: 'Google Analytics 4 configurado' },
       { name: 'Backup Automático', included: true, description: 'Proteção de dados semanal' },
       { name: 'WhatsApp Integration', included: true, description: 'Botão flutuante configurado' },
@@ -559,7 +559,57 @@ Gostaria de agendar uma reunião para discutir um orçamento personalizado. Quan
   if (!mounted) return null
 
   return (
-    <div className="min-h-screen bg-gradient-console">
+    <main className="min-h-screen bg-gradient-console">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Product",
+            "name": "Planos de Desenvolvimento Web",
+            "description": "Planos profissionais de desenvolvimento web com IA, suporte 24/7 e garantia de resultados",
+            "brand": {
+              "@type": "Organization",
+              "name": "PlayCode Agency"
+            },
+            "offers": [
+              {
+                "@type": "Offer",
+                "name": "Starter Pack",
+                "description": "Landing page responsiva ideal para pequenos negócios",
+                "price": "797",
+                "priceCurrency": "BRL",
+                "availability": "https://schema.org/InStock",
+                "validFrom": "2024-01-01",
+                "priceValidUntil": "2024-12-31",
+                "itemCondition": "https://schema.org/NewCondition"
+              },
+              {
+                "@type": "Offer",
+                "name": "Business One",
+                "description": "Website profissional one-page para pequenas empresas",
+                "price": "1497",
+                "priceCurrency": "BRL",
+                "availability": "https://schema.org/InStock",
+                "validFrom": "2024-01-01",
+                "priceValidUntil": "2024-12-31",
+                "itemCondition": "https://schema.org/NewCondition"
+              },
+              {
+                "@type": "Offer",
+                "name": "Pro Guild", 
+                "description": "Solução completa para negócios em crescimento",
+                "price": "2497",
+                "priceCurrency": "BRL",
+                "availability": "https://schema.org/InStock",
+                "validFrom": "2024-01-01",
+                "priceValidUntil": "2024-12-31",
+                "itemCondition": "https://schema.org/NewCondition"
+              }
+            ]
+          })
+        }}
+      />
       {/* Enhanced Badge Animations CSS */}
       <style jsx>{badgeStyles}</style>
 
@@ -1622,6 +1672,6 @@ Quando podemos conversar para discutir minha necessidade?`
           billingCycle={checkoutModal.billingCycle}
         />
       )}
-    </div>
+    </main>
   )
 }

@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
-import { Bot, Zap, Cpu, Brain, Search } from 'lucide-react'
+import { Bot, MenuSquare, Users, Brain, Search } from 'lucide-react'
 import PowerUpCard from '@/components/gaming/PowerUpCard'
 import { trackingHelpers } from '@/lib/hooks/useAchievements'
 import { audioHelpers } from '@/lib/hooks/useAudio'
@@ -11,107 +11,107 @@ import { audioHelpers } from '@/lib/hooks/useAudio'
 const powerUps = [
   {
     id: 'ai_chatbot',
-    name: 'AI Companion',
-    description: 'Chatbot inteligente com processamento de linguagem natural',
+    name: 'Chatbot com Inteligência Artificial',
+    description: 'Atendimento automatizado 24h com IA ChatGPT para aumentar vendas e conversões',
     icon: Bot,
     rarity: 'legendary' as const, // Dourado - IA premium
     level: 15,
     stats: { power: 95, efficiency: 88, innovation: 92 },
-    price: 'R$ 1.500',
-    fullDescription: 'Chatbot inteligente com IA ChatGPT integrada, capaz de responder perguntas complexas, fazer atendimento automatizado 24/7 e integração com WhatsApp Business.',
+    price: 'Sob consulta',
+    fullDescription: 'Sistema de chatbot inteligente com IA ChatGPT integrada para atendimento automatizado 24/7. Capaz de responder perguntas complexas, qualificar leads e fazer atendimento personalizado via WhatsApp Business, aumentando vendas e conversões.',
     features: [
-      'IA ChatGPT integrada',
-      'Atendimento 24/7 automatizado',
-      'Integração WhatsApp Business',
+      'Integração IA ChatGPT avançada',
+      'Atendimento automatizado 24/7',
+      'WhatsApp Business API integrado',
       'Sistema de tickets inteligente',
-      'Treinamento personalizado',
-      'Dashboard de analytics',
-      'Histórico de conversas',
-      'Respostas inteligentes'
+      'Qualificação automática de leads',
+      'Dashboard analytics completo',
+      'Histórico conversas detalhado',
+      'Respostas personalizadas inteligentes'
     ]
   },
   {
-    id: 'performance_boost',
-    name: 'Turbo Engine',
-    description: 'Otimização avançada de performance e velocidade',
-    icon: Zap,
-    rarity: 'rare' as const, // Azul elétrico - velocidade
+    id: 'digital_menu',
+    name: 'Cardápio Digital QR Code',
+    description: 'Cardápio digital responsivo com QR Code para restaurantes e catálogo empresarial',
+    icon: MenuSquare,
+    rarity: 'rare' as const, // Azul elétrico - gastronomia
     level: 12,
-    stats: { power: 90, efficiency: 95, innovation: 75 },
-    price: 'R$ 1.900',
-    fullDescription: 'Otimização completa de performance com CDN global, compressão avançada, cache inteligente e monitoramento em tempo real para máxima velocidade.',
+    stats: { power: 85, efficiency: 90, innovation: 80 },
+    price: 'Sob consulta',
+    fullDescription: 'Solução completa de cardápio digital responsivo para restaurantes e catálogo digital empresarial. Inclui QR Code personalizado, gestão produtos, galeria fotos profissionais e sistema pedidos integrado WhatsApp.',
     features: [
-      'CDN global integrado',
-      'Compressão avançada de assets',
-      'Cache inteligente multicamada',
-      'Otimização de imagens automática',
-      'Minificação de código',
-      'Lazy loading avançado',
-      'Monitoramento de performance',
-      'Core Web Vitals otimizados'
+      'QR Code cardápio personalizado',
+      'Design responsivo mobile-first',
+      'Gestão produtos/pratos online',
+      'Galeria fotos profissionais HD',
+      'Categorização inteligente produtos',
+      'Sistema pedidos WhatsApp integrado',
+      'Analytics visualizações detalhado',
+      'SEO otimizado cardápio digital'
     ]
   },
   {
-    id: 'ai_processor',
-    name: 'Neural Core',
-    description: 'Processamento de dados com machine learning avançado',
-    icon: Cpu,
-    rarity: 'epic' as const, // Roxo - tecnologia avançada
-    level: 18,
-    stats: { power: 92, efficiency: 87, innovation: 95 },
-    price: 'R$ 3.200',
-    fullDescription: 'Sistema avançado de machine learning para análise preditiva, processamento de big data e automação inteligente de processos empresariais.',
+    id: 'specialized_landing',
+    name: 'Landing Pages Profissionais',
+    description: 'Landing pages otimizadas para advogados, psicólogos, coaches e personal trainers',
+    icon: Users,
+    rarity: 'epic' as const, // Roxo - especialização profissional
+    level: 16,
+    stats: { power: 88, efficiency: 92, innovation: 85 },
+    price: 'Sob consulta',
+    fullDescription: 'Landing pages especializadas para profissionais liberais com alta conversão. Templates personalizados por área profissional, formulários otimizados, integração agendamento online e SEO especializado.',
     features: [
-      'Machine Learning personalizado',
-      'Análise preditiva avançada',
-      'Processamento de big data',
-      'Automação inteligente',
-      'Reconhecimento de padrões',
-      'APIs de IA integradas',
-      'Modelos treináveis',
-      'Analytics comportamental'
+      'Templates profissionais por área',
+      'Formulários agendamento otimizados',
+      'Integração calendário Google',
+      'Seção depoimentos clientes',
+      'Área certificações credenciais',
+      'Blog profissional SEO integrado',
+      'WhatsApp Business integração',
+      'SEO especializado profissionais liberais'
     ]
   },
   {
-    id: 'smart_analytics',
-    name: 'Mind Reader',
-    description: 'Analytics inteligente com insights preditivos',
+    id: 'management_system',
+    name: 'Sistema ERP/CRM Empresarial',
+    description: 'Sistema de gestão empresarial completo: CRM, financeiro, agenda e relatórios',
     icon: Brain,
     rarity: 'mythic' as const, // Verde - poder mítico
-    level: 14,
-    stats: { power: 88, efficiency: 92, innovation: 85 },
-    price: 'R$ 1.650',
-    fullDescription: 'Sistema avançado de analytics com dashboards interativos, relatórios automatizados, análise de comportamento do usuário e métricas de engajamento.',
+    level: 16,
+    stats: { power: 92, efficiency: 95, innovation: 88 },
+    price: 'Sob consulta',
+    fullDescription: 'Sistema ERP/CRM empresarial personalizado para organização total da empresa. Gestão completa clientes, controle financeiro, agenda online, relatórios gerenciais e integração WhatsApp em plataforma única.',
     features: [
-      'Dashboards interativos',
-      'Relatórios automatizados',
-      'Análise de comportamento',
-      'Funis de conversão',
-      'Métricas de engajamento',
-      'Integração Google Analytics',
-      'Facebook Pixel avançado',
-      'ROI e métricas de negócio'
+      'Sistema CRM gestão clientes',
+      'Controle financeiro empresarial completo',
+      'Agenda online integrada',
+      'Relatórios gerenciais automatizados',
+      'Integração WhatsApp Business',
+      'Backup automático dados',
+      'Dashboard executivo personalizado',
+      'Módulos empresariais personalizáveis'
     ]
   },
   {
     id: 'seo_optimizer',
-    name: 'Search Master',
-    description: 'Otimização SEO com IA para máxima visibilidade',
+    name: 'SEO Otimização Google',
+    description: 'Otimização SEO completa com IA para primeira página Google e aumento tráfego',
     icon: Search,
     rarity: 'common' as const, // Branco - base essencial
     level: 13,
     stats: { power: 82, efficiency: 90, innovation: 78 },
-    price: 'R$ 2.800',
-    fullDescription: 'Estratégia completa de SEO com auditoria técnica, pesquisa de palavras-chave, otimização on-page, criação de conteúdo otimizado e monitoramento de resultados.',
+    price: 'Sob consulta',
+    fullDescription: 'Estratégia SEO completa para primeira página Google. Auditoria técnica detalhada, pesquisa palavras-chave lucrativas, otimização on-page, criação conteúdo SEO e monitoramento rankings Google.',
     features: [
-      'Auditoria técnica completa',
-      'Pesquisa de palavras-chave',
-      'Otimização on-page',
-      'Criação de conteúdo SEO',
-      'Link building estratégico',
-      'Monitoramento de rankings',
-      'Relatórios mensais',
-      'Google Analytics avançado'
+      'Auditoria SEO técnica completa',
+      'Pesquisa palavras-chave lucrativas',
+      'Otimização on-page avançada',
+      'Criação conteúdo SEO otimizado',
+      'Link building estratégico qualificado',
+      'Monitoramento rankings Google',
+      'Relatórios SEO mensais detalhados',
+      'Google Analytics configuração avançada'
     ]
   }
 ]
@@ -138,16 +138,29 @@ export default function PowerUpsSection() {
           viewport={{ once: true }}
           className="text-center mb-16"
         >
+          {/* Slogan Simples */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.2, duration: 0.6 }}
+            viewport={{ once: true }}
+            className="mb-12"
+          >
+            <div className="gaming-mono text-lg font-bold text-plasma-yellow">
+              🚀 SUA IDEIA É NOSSO CHEAT CODE PARA O SUCESSO! 🎯💡
+            </div>
+          </motion.div>
+
           <h2 className="gaming-title text-4xl lg:text-6xl font-bold mb-6">
-            <span className="text-neon-cyan">POWER-UPS</span>
+            <span className="text-neon-cyan">DESENVOLVIMENTO WEB</span>
             <br />
-            <span className="text-magenta-power">DISPONÍVEIS</span>
+            <span className="text-magenta-power">ESPECIALIZADO</span>
           </h2>
           
           <p className="gaming-subtitle text-xl text-led-white/80 max-w-3xl mx-auto mb-8">
-            Escolha suas habilidades especiais e monte a stack perfeita 
-            para dominar o mundo digital. Cada power-up oferece 
-            características únicas para seu projeto.
+            Soluções completas em <strong>desenvolvimento web</strong>, <strong>criação de sites</strong>, 
+            <strong>chatbot com IA</strong>, <strong>sistema ERP/CRM</strong> e <strong>SEO para Google</strong>. 
+            Tecnologia avançada para aumentar vendas e conversões do seu negócio online.
           </p>
 
           {/* Collection Stats */}
@@ -157,25 +170,25 @@ export default function PowerUpsSection() {
                 {powerUps.length}
               </div>
               <div className="gaming-mono text-xs text-led-white/60">
-                POWER-UPS TOTAL
+                SERVIÇOS DIGITAIS
               </div>
             </div>
             
             <div className="hud-element text-center px-6 py-3">
               <div className="gaming-display text-2xl font-bold text-electric-blue">
-                4
+                40+
               </div>
               <div className="gaming-mono text-xs text-led-white/60">
-                RARIDADES
+                CLIENTES SATISFEITOS
               </div>
             </div>
             
             <div className="hud-element text-center px-6 py-3">
               <div className="gaming-display text-2xl font-bold text-plasma-yellow">
-                ∞
+                10
               </div>
               <div className="gaming-mono text-xs text-led-white/60">
-                COMBINAÇÕES
+                ANOS EXPERIÊNCIA
               </div>
             </div>
           </div>
@@ -247,13 +260,13 @@ export default function PowerUpsSection() {
         >
           <div className="gaming-card p-8 max-w-2xl mx-auto">
             <h3 className="gaming-title text-2xl font-bold mb-4 text-gaming-purple">
-              MONTE SUA STACK PERFEITA
+              SOLUÇÕES WEB PERSONALIZADAS
             </h3>
             
             <p className="gaming-subtitle text-led-white/80 mb-6">
-              Combine diferentes power-ups para criar a solução ideal 
-              para seu projeto. Nossa equipe ajuda você a escolher 
-              a melhor configuração.
+              Combine nossos <strong>serviços de desenvolvimento web</strong> para criar 
+              a solução digital perfeita. Nossa equipe especializada ajuda você a escolher 
+              as melhores tecnologias para aumentar vendas e resultados online.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -266,7 +279,7 @@ export default function PowerUpsSection() {
                 onMouseEnter={audioHelpers.playHover}
                 className="gaming-button text-lg px-8 py-4 text-center"
               >
-                <span className="relative z-10">CONFIGURAR PROJETO</span>
+                <span className="relative z-10">SOLICITAR ORÇAMENTO</span>
               </Link>
               
               <Link
@@ -278,7 +291,7 @@ export default function PowerUpsSection() {
                 onMouseEnter={audioHelpers.playHover}
                 className="gaming-card px-8 py-4 text-lg font-semibold text-electric-blue border-electric-blue hover:text-controller-black hover:bg-electric-blue transition-all duration-300 text-center"
               >
-                VER COMBOS RECOMENDADOS
+                VER PACOTES DESENVOLVIMENTO WEB
               </Link>
             </div>
           </div>
@@ -286,11 +299,11 @@ export default function PowerUpsSection() {
 
         {/* Achievement System Preview */}
         <motion.div
-          initial={{ opacity: 0, x: -50 }}
+          initial={{ opacity: 0, x: 50 }}
           whileInView={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8, delay: 0.6 }}
           viewport={{ once: true }}
-          className="fixed bottom-6 left-6 z-50"
+          className="fixed bottom-20 right-4 z-30"
         >
           <div className="gaming-card p-4 max-w-xs border-laser-green bg-laser-green/10">
             <div className="flex items-center space-x-3">

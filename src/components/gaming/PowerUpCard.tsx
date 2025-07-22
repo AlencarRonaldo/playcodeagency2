@@ -32,39 +32,44 @@ interface PowerUpCardProps {
 
 const rarityConfig = {
   common: {
-    border: 'border-led-white/30',
-    glow: 'shadow-[0_0_10px_rgba(255,255,255,0.3)]',
-    gradient: 'from-led-white/10 to-led-white/5',
+    border: 'border-led-white/50',
+    glow: 'shadow-[0_0_15px_rgba(255,255,255,0.5)]',
+    gradient: 'from-led-white/20 to-led-white/10',
     text: 'text-led-white',
-    accent: 'text-led-white'
+    accent: 'text-led-white',
+    badgeGlow: 'drop-shadow-[0_0_8px_rgba(255,255,255,0.8)]'
   },
   rare: {
-    border: 'border-electric-blue/60',
-    glow: 'shadow-[0_0_15px_rgba(0,212,255,0.4)]',
-    gradient: 'from-electric-blue/20 to-electric-blue/10',
+    border: 'border-electric-blue/70',
+    glow: 'shadow-[0_0_20px_rgba(0,212,255,0.6)]',
+    gradient: 'from-electric-blue/30 to-electric-blue/15',
     text: 'text-electric-blue',
-    accent: 'text-electric-blue'
+    accent: 'text-electric-blue',
+    badgeGlow: 'drop-shadow-[0_0_8px_rgba(0,212,255,0.8)]'
   },
   epic: {
-    border: 'border-gaming-purple/70',
-    glow: 'shadow-[0_0_20px_rgba(139,92,246,0.5)]',
-    gradient: 'from-gaming-purple/25 to-gaming-purple/10',
+    border: 'border-gaming-purple/80',
+    glow: 'shadow-[0_0_25px_rgba(139,92,246,0.7)]',
+    gradient: 'from-gaming-purple/35 to-gaming-purple/15',
     text: 'text-gaming-purple',
-    accent: 'text-gaming-purple'
+    accent: 'text-gaming-purple',
+    badgeGlow: 'drop-shadow-[0_0_8px_rgba(139,92,246,0.8)]'
   },
   legendary: {
-    border: 'border-plasma-yellow/80',
-    glow: 'shadow-[0_0_25px_rgba(255,234,0,0.6)]',
-    gradient: 'from-plasma-yellow/30 to-plasma-yellow/10',
+    border: 'border-plasma-yellow/90',
+    glow: 'shadow-[0_0_30px_rgba(255,234,0,0.8)]',
+    gradient: 'from-plasma-yellow/40 to-plasma-yellow/20',
     text: 'text-plasma-yellow',
-    accent: 'text-plasma-yellow'
+    accent: 'text-plasma-yellow',
+    badgeGlow: 'drop-shadow-[0_0_10px_rgba(255,234,0,1)]'
   },
   mythic: {
-    border: 'border-laser-green/80',
-    glow: 'shadow-[0_0_30px_rgba(34,197,94,0.7)]',
-    gradient: 'from-laser-green/30 to-laser-green/10',
+    border: 'border-laser-green/90',
+    glow: 'shadow-[0_0_35px_rgba(34,197,94,0.9)]',
+    gradient: 'from-laser-green/40 to-laser-green/20',
     text: 'text-laser-green',
-    accent: 'text-laser-green'
+    accent: 'text-laser-green',
+    badgeGlow: 'drop-shadow-[0_0_10px_rgba(34,197,94,1)]'
   }
 }
 
@@ -87,9 +92,24 @@ export default function PowerUpCard({
 }: PowerUpCardProps) {
   const config = rarityConfig[rarity]
   const [internalExpanded, setInternalExpanded] = useState(false)
+  const [mounted, setMounted] = useState(false)
+  const [particles, setParticles] = useState<Array<{x: number, y: number, duration: number, delay: number}>>([])
   
   // Use controlled state if provided, otherwise use internal state
   const isExpanded = controlledExpanded !== undefined ? controlledExpanded : internalExpanded
+  
+  // Generate particles only on client
+  useEffect(() => {
+    setMounted(true)
+    setParticles(
+      Array.from({ length: 3 }).map(() => ({
+        x: Math.random() * 200,
+        y: Math.random() * 200,
+        duration: 2 + Math.random(),
+        delay: Math.random() * 3
+      }))
+    )
+  }, [])
 
   // Track power-up view on mount
   useEffect(() => {
@@ -140,11 +160,16 @@ export default function PowerUpCard({
       {/* Rarity Indicator */}
       <div className="absolute top-3 right-3">
         <div className={`
-          px-2 py-1 rounded-md text-xs font-bold gaming-mono uppercase
-          ${config.text} ${config.border} border
+          px-3 py-1.5 rounded-lg text-xs font-bold gaming-mono uppercase
+          ${config.text} ${config.border} border-2
           ${config.gradient} bg-gradient-to-r
+          shadow-lg backdrop-blur-sm ${config.badgeGlow}
+          transform transition-all duration-300 hover:scale-110 hover:rotate-1
+          animate-pulse-slow neon-glow-strong
+          relative overflow-hidden
         `}>
-          {rarity}
+          <span className="relative z-10">{rarity}</span>
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
         </div>
       </div>
 
@@ -242,18 +267,9 @@ export default function PowerUpCard({
                   trackingHelpers.trackPowerUpSelect(id)
                 }
                 
-                // Open WhatsApp with interest message
-                const message = `🎮 Olá! Tenho interesse no power-up *${name}* ${price ? `por ${price}` : ''}.
-
-📋 *Detalhes:*
-• ${description}
-${price ? `• Valor: ${price}` : ''}
-• Level: ${level}
-
-Gostaria de saber mais informações e como proceder com a contratação. Quando podemos conversar?`
-                
-                const whatsappUrl = `https://wa.me/5511956534963?text=${encodeURIComponent(message)}`
-                window.open(whatsappUrl, '_blank')
+                // Redirect to contact page with service pre-selected
+                const contactUrl = `/contato?servico=${encodeURIComponent(id)}&servico_nome=${encodeURIComponent(name)}`
+                window.location.href = contactUrl
               } else {
                 audioHelpers.playError()
               }
@@ -354,32 +370,34 @@ Gostaria de saber mais informações e como proceder com a contratação. Quando
       </div>
 
       {/* Power-up Particles */}
-      <div className="absolute inset-0 overflow-hidden rounded-xl pointer-events-none">
-        {Array.from({ length: 3 }).map((_, i) => (
-          <motion.div
-            key={i}
-            className={`absolute w-1 h-1 ${config.text} rounded-full`}
-            initial={{
-              x: Math.random() * 200,
-              y: Math.random() * 200,
-              opacity: 0
-            }}
-            animate={{
-              y: [null, -50],
-              opacity: [0, 1, 0]
-            }}
-            transition={{
-              duration: 2 + Math.random(),
-              repeat: Infinity,
-              delay: Math.random() * 3,
-              ease: 'linear'
-            }}
-            style={{
-              boxShadow: `0 0 4px currentColor`
-            }}
-          />
-        ))}
-      </div>
+      {mounted && (
+        <div className="absolute inset-0 overflow-hidden rounded-xl pointer-events-none">
+          {particles.map((particle, i) => (
+            <motion.div
+              key={i}
+              className={`absolute w-1 h-1 ${config.text} rounded-full`}
+              initial={{
+                x: particle.x,
+                y: particle.y,
+                opacity: 0
+              }}
+              animate={{
+                y: [particle.y, particle.y - 50],
+                opacity: [0, 1, 0]
+              }}
+              transition={{
+                duration: particle.duration,
+                repeat: Infinity,
+                delay: particle.delay,
+                ease: 'linear'
+              }}
+              style={{
+                boxShadow: `0 0 4px currentColor`
+              }}
+            />
+          ))}
+        </div>
+      )}
     </motion.div>
   )
 }

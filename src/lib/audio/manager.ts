@@ -193,7 +193,7 @@ export class AudioManager {
 
       const tryNextUrl = () => {
         if (currentUrlIndex >= urls.length) {
-          console.warn(`🔄 Failed to load all formats for track: ${track.id}, will use synthesizer fallback`)
+          console.log(`🎵 Using synthesizer fallback for track: ${track.id}`)
           
           // Instead of rejecting, mark as synthesizer track
           const synthAudio = new Audio()
@@ -208,17 +208,25 @@ export class AudioManager {
         const currentUrl = urls[currentUrlIndex]
         
         const onLoad = () => {
+          // Check if audio file has actual content
+          if (audio.duration === 0) {
+            console.log(`🎵 Empty audio file detected for ${track.id}, using synthesizer`)
+            currentUrlIndex++
+            tryNextUrl()
+            return
+          }
+          
           this.state.loadedTracks.set(track.id, audio)
           audio.removeEventListener('canplaythrough', onLoad)
           audio.removeEventListener('error', onError)
-          console.log(`✅ Loaded audio: ${track.name} (${currentUrl})`)
+          console.log(`✅ Loaded audio: ${track.name} (${currentUrl.split('/').pop()})`)
           resolve(audio)
         }
 
         const onError = () => {
           audio.removeEventListener('canplaythrough', onLoad)
           audio.removeEventListener('error', onError)
-          console.warn(`Failed to load ${currentUrl}, trying next format...`)
+          console.log(`🎵 Trying fallback for ${currentUrl.split('/').pop()}...`)
           currentUrlIndex++
           tryNextUrl()
         }

@@ -178,6 +178,7 @@ export default function HeroSection() {
                   transition={{ delay: 0.3, duration: 0.8 }}
                   className="gaming-title text-5xl lg:text-7xl font-bold mb-6 neon-glow text-neon-cyan"
                 >
+                  <span className="sr-only">PlayCode Agency - </span>
                   READY
                   <br />
                   <span className="text-magenta-power">PLAYER</span>
@@ -191,9 +192,9 @@ export default function HeroSection() {
                   transition={{ delay: 0.6, duration: 0.8 }}
                   className="gaming-subtitle text-xl lg:text-2xl mb-8 text-led-white/80 max-w-xl"
                 >
-                  Eleve seu negócio para o próximo nível digital. 
-                  Criamos experiências inovadoras que dominam o mercado 
-                  com inteligência artificial e soluções tecnológicas avançadas.
+                  Transformamos seu negócio com <strong>desenvolvimento web profissional</strong>, 
+                  <strong>integração de IA</strong> e <strong>soluções digitais personalizadas</strong>. 
+                  Mais de <strong>40 clientes satisfeitos</strong> com <strong>10 anos de experiência</strong>.
                 </motion.p>
 
                 {/* Action Buttons */}
@@ -204,7 +205,7 @@ export default function HeroSection() {
                   className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start"
                 >
                   <button 
-                    className="gaming-button text-lg px-8 py-4 hover:animate-glow"
+                    className="gaming-button text-lg px-8 py-4 animate-urgent-glow hover:animate-cta-pulse focus:animate-cta-pulse"
                     onMouseEnter={() => audioHelpers.playHover()}
                     onClick={() => {
                       audioHelpers.playClick(true)
@@ -213,7 +214,7 @@ export default function HeroSection() {
                       window.location.href = '/contato'
                     }}
                   >
-                    <span className="relative z-10">INICIAR MISSÃO</span>
+                    <span className="relative z-10 drop-shadow-[0_0_8px_rgba(255,255,255,0.8)]">INICIAR MISSÃO</span>
                   </button>
                 </motion.div>
 
@@ -226,15 +227,15 @@ export default function HeroSection() {
                 >
                   <div className="text-center">
                     <div className="gaming-display text-2xl font-bold text-laser-green">50+</div>
-                    <div className="gaming-mono text-sm text-led-white/60">PROJETOS</div>
+                    <div className="gaming-mono text-sm text-led-white/60">PROJETOS ENTREGUES</div>
                   </div>
                   <div className="text-center">
                     <div className="gaming-display text-2xl font-bold text-plasma-yellow">24/7</div>
-                    <div className="gaming-mono text-sm text-led-white/60">SUPORTE</div>
+                    <div className="gaming-mono text-sm text-led-white/60">SUPORTE DIGITAL</div>
                   </div>
                   <div className="text-center">
-                    <div className="gaming-display text-2xl font-bold text-magenta-power">99.9%</div>
-                    <div className="gaming-mono text-sm text-led-white/60">UPTIME</div>
+                    <div className="gaming-display text-2xl font-bold text-magenta-power">10+</div>
+                    <div className="gaming-mono text-sm text-led-white/60">ANOS EXPERIÊNCIA</div>
                   </div>
                 </motion.div>
               </div>

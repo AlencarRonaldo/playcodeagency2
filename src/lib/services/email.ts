@@ -16,10 +16,31 @@ interface FollowUpEmailData {
   daysElapsed: number;
 }
 
+interface ContactEmailData {
+  name: string;
+  email: string;
+  phone?: string;
+  company?: string;
+  project_type: string;
+  budget_range?: string;
+  urgency: string;
+  message: string;
+  lead_score: number;
+}
+
 export class EmailService {
   private transporter: nodemailer.Transporter;
 
   constructor() {
+    // Log SMTP config for debugging (remove in production)
+    console.log('📧 SMTP Config:', {
+      host: process.env.SMTP_HOST,
+      port: process.env.SMTP_PORT,
+      secure: process.env.SMTP_SECURE,
+      user: process.env.SMTP_USER,
+      hasPass: !!process.env.SMTP_PASS
+    });
+    
     this.transporter = nodemailer.createTransport({
       host: process.env.SMTP_HOST,
       port: parseInt(process.env.SMTP_PORT || '587'),
@@ -29,6 +50,46 @@ export class EmailService {
         pass: process.env.SMTP_PASS,
       },
     });
+  }
+
+  async sendContactFormEmail(data: ContactEmailData): Promise<void> {
+    const template = this.generateContactFormTemplate(data);
+    
+    console.log('📧 Tentando enviar email de contato...');
+
+    try {
+      console.log('📧 Verificando conexão SMTP...');
+      await this.transporter.verify();
+      console.log('✅ Conexão SMTP verificada com sucesso para email de contato');
+
+      const mailOptions = {
+        from: `"Formulário Contato 👽" <${process.env.SMTP_FROM}>`,
+        to: 'contato@playcodeagency.xyz',
+        replyTo: data.email,
+        subject: `🎮 Nova Missão (Lead Score: ${data.lead_score}): ${data.project_type}`,
+        html: template,
+      };
+      
+      console.log('📧 Enviando email com opções:', {
+        from: mailOptions.from,
+        to: mailOptions.to,
+        subject: mailOptions.subject
+      });
+
+      const info = await this.transporter.sendMail(mailOptions);
+
+      console.log('✅ Email de contato enviado com sucesso - Message ID:', info.messageId);
+      console.log('📧 Response:', info.response);
+    } catch (error) {
+      console.error('❌ Erro detalhado ao enviar email de contato:');
+      console.error('   - Error object:', error);
+      console.error('   - Error message:', error instanceof Error ? error.message : 'Unknown error');
+      console.error('   - Error code:', (error as any)?.code);
+      console.error('   - Error response:', (error as any)?.response);
+      
+      // Relança o erro para que a API possa tratar adequadamente
+      throw error;
+    }
   }
 
   async sendWelcomeEmail(data: WelcomeEmailData): Promise<void> {
@@ -99,6 +160,367 @@ export class EmailService {
       subject: `🚀 Continue seu projeto ${data.serviceType} - PlayCode Agency`,
       html: template,
     });
+  }
+
+  private generateContactFormTemplate(data: ContactEmailData): string {
+    // Mapear tipos de projeto para labels mais amigáveis
+    const projectTypes: Record<string, string> = {
+      'website': '🌐 Website/Landing Page',
+      'webapp': '⚡ Web Application', 
+      'mobile': '📱 Mobile App',
+      'ai': '🤖 AI Integration',
+      'ecommerce': '🛒 E-commerce',
+      'custom': '🚀 Custom Solution'
+    };
+
+    // Mapear níveis de urgência
+    const urgencyLevels: Record<string, string> = {
+      'low': '🐌 Standard (30-60 dias)',
+      'normal': '⚡ Fast Track (15-30 dias)', 
+      'high': '🚀 Rush (7-15 dias)',
+      'critical': '🔥 Emergency (< 7 dias)'
+    };
+
+    // Determinar cor da urgência
+    const urgencyColors: Record<string, string> = {
+      'low': '#22c55e',
+      'normal': '#3b82f6',
+      'high': '#f59e0b', 
+      'critical': '#ef4444'
+    };
+
+    // Determinar cor do lead score
+    const getLeadScoreColor = (score: number): string => {
+      if (score >= 2000) return '#10b981'; // green
+      if (score >= 1000) return '#3b82f6'; // blue
+      if (score >= 500) return '#f59e0b';   // amber
+      return '#6b7280'; // gray
+    };
+
+    return `
+    <!DOCTYPE html>
+    <html lang="pt-BR">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Nova Missão - PlayCode Agency</title>
+        <style>
+            * { margin: 0; padding: 0; box-sizing: border-box; }
+            
+            body { 
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                background: #f8fafc;
+                color: #1e293b;
+                line-height: 1.6;
+                padding: 20px;
+                margin: 0;
+            }
+            
+            .container { 
+                max-width: 700px; 
+                margin: 0 auto; 
+                background: #ffffff;
+                border-radius: 16px;
+                overflow: hidden;
+                box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+                border: 2px solid #e2e8f0;
+            }
+            
+            .header { 
+                background: linear-gradient(135deg, #0ea5e9 0%, #8b5cf6 50%, #06b6d4 100%);
+                padding: 30px 20px;
+                text-align: center;
+                color: #ffffff;
+                position: relative;
+                overflow: hidden;
+            }
+            
+            .header::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="circuit" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M0 10h20M10 0v20" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23circuit)"/></svg>');
+                opacity: 0.3;
+            }
+            
+            .header h1 { 
+                font-size: 28px; 
+                font-weight: bold;
+                margin-bottom: 8px;
+                position: relative;
+                z-index: 1;
+                text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            }
+            
+            .logo-text {
+                font-size: 32px;
+                font-weight: 900;
+                margin-bottom: 15px;
+                color: #ffffff;
+                text-shadow: 0 4px 8px rgba(0,0,0,0.5);
+                letter-spacing: 1px;
+                position: relative;
+                z-index: 1;
+            }
+            
+            .logo-text .play {
+                color: #00d4ff;
+            }
+            
+            .logo-text .code {
+                color: #ff6b6b;
+            }
+            
+            .logo-text .agency {
+                color: #4ecdc4;
+            }
+            
+            .lead-score-badge {
+                display: inline-block;
+                background: rgba(255, 255, 255, 0.2);
+                color: #ffffff !important;
+                padding: 8px 16px;
+                border-radius: 20px;
+                font-weight: bold;
+                font-size: 14px;
+                backdrop-filter: blur(10px);
+                border: 2px solid rgba(255, 255, 255, 0.5);
+                position: relative;
+                z-index: 1;
+                text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+            }
+            
+            .content { 
+                padding: 30px;
+                background: #ffffff;
+            }
+            
+            .section {
+                margin-bottom: 30px;
+            }
+            
+            .section-title { 
+                font-size: 20px; 
+                font-weight: bold;
+                color: #0f172a;
+                margin-bottom: 16px;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                padding-bottom: 8px;
+                border-bottom: 2px solid #cbd5e1;
+            }
+            
+            .info-grid {
+                display: grid;
+                gap: 12px;
+            }
+            
+            .info-item { 
+                background: #f9fafb;
+                padding: 16px 20px;
+                border-radius: 12px;
+                border-left: 4px solid #0ea5e9;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                transition: all 0.3s ease;
+            }
+            
+            .info-item:hover {
+                background: #f3f4f6;
+                transform: translateX(4px);
+            }
+            
+            .info-label { 
+                font-weight: 600;
+                color: #475569;
+                font-size: 14px;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+            }
+            
+            .info-value { 
+                font-weight: bold;
+                color: #0f172a;
+                font-size: 16px;
+                text-align: right;
+            }
+            
+            .email-link {
+                color: #0ea5e9;
+                text-decoration: none;
+                font-weight: bold;
+            }
+            
+            .email-link:hover {
+                color: #0284c7;
+                text-decoration: underline;
+            }
+            
+            .urgency-badge {
+                display: inline-block;
+                padding: 6px 12px;
+                border-radius: 20px;
+                font-size: 14px;
+                font-weight: bold;
+                color: #ffffff !important;
+                text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+                border: 1px solid rgba(255,255,255,0.3);
+            }
+            
+            .message-box {
+                background: #f9fafb;
+                border: 2px solid #d1d5db;
+                border-radius: 12px;
+                padding: 20px;
+                font-size: 16px;
+                line-height: 1.7;
+                color: #0f172a;
+                position: relative;
+            }
+            
+            .message-box::before {
+                content: '💬';
+                position: absolute;
+                top: -10px;
+                left: 20px;
+                background: #ffffff;
+                padding: 0 8px;
+                font-size: 20px;
+            }
+            
+            .project-type-badge {
+                display: inline-block;
+                background: #059669 !important;
+                color: #000000 !important;
+                padding: 8px 16px;
+                border-radius: 20px;
+                font-weight: bold;
+                font-size: 14px;
+                text-shadow: none;
+                border: 2px solid #047857;
+                box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            }
+            
+            .footer {
+                background: #f9fafb;
+                padding: 20px 30px;
+                border-top: 1px solid #d1d5db;
+                text-align: center;
+                color: #4b5563;
+                font-size: 14px;
+            }
+            
+            .gaming-emoji {
+                font-size: 24px;
+                margin-right: 8px;
+            }
+            
+            @media (max-width: 600px) {
+                body { padding: 10px; }
+                .container { border-radius: 8px; }
+                .header { padding: 20px 15px; }
+                .content { padding: 20px 15px; }
+                .header h1 { font-size: 24px; }
+                .section-title { font-size: 18px; }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="header">
+                <div class="logo-text">
+                    🎮 <span class="play">Play</span><span class="code">Code</span> <span class="agency">Agency</span>
+                </div>
+                <h1><span class="gaming-emoji">🎯</span>Nova Missão Recebida!</h1>
+                <div class="lead-score-badge" style="color: #ffffff !important;">
+                    ⭐ Lead Score: <strong style="color: #ffffff !important;">${data.lead_score}</strong>
+                </div>
+            </div>
+            
+            <div class="content">
+                <!-- Informações do Contato -->
+                <div class="section">
+                    <h2 class="section-title">
+                        <span class="gaming-emoji">👤</span>Informações do Player
+                    </h2>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <span class="info-label">Nome</span>
+                            <span class="info-value">${data.name}</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Email</span>
+                            <span class="info-value">
+                                <a href="mailto:${data.email}" class="email-link">${data.email}</a>
+                            </span>
+                        </div>
+                        ${data.phone ? `
+                        <div class="info-item">
+                            <span class="info-label">Telefone</span>
+                            <span class="info-value">${data.phone}</span>
+                        </div>` : ''}
+                        ${data.company ? `
+                        <div class="info-item">
+                            <span class="info-label">Empresa</span>
+                            <span class="info-value">${data.company}</span>
+                        </div>` : ''}
+                    </div>
+                </div>
+
+                <!-- Detalhes da Missão -->
+                <div class="section">
+                    <h2 class="section-title">
+                        <span class="gaming-emoji">🚀</span>Detalhes da Missão
+                    </h2>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <span class="info-label">Tipo de Projeto</span>
+                            <span class="info-value">
+                                <span class="project-type-badge" style="background: #059669 !important; color: #000000 !important; font-weight: bold; border: 2px solid #047857;">
+                                    ${projectTypes[data.project_type] || data.project_type}
+                                </span>
+                            </span>
+                        </div>
+                        ${data.budget_range ? `
+                        <div class="info-item">
+                            <span class="info-label">Orçamento</span>
+                            <span class="info-value">${data.budget_range}</span>
+                        </div>` : ''}
+                        <div class="info-item">
+                            <span class="info-label">Nível de Urgência</span>
+                            <span class="info-value">
+                                <span class="urgency-badge" style="background-color: ${urgencyColors[data.urgency] || urgencyColors.normal}; color: #ffffff !important;">
+                                    ${urgencyLevels[data.urgency] || data.urgency}
+                                </span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mensagem do Cliente -->
+                <div class="section">
+                    <h2 class="section-title">
+                        <span class="gaming-emoji">📝</span>Briefing da Missão
+                    </h2>
+                    <div class="message-box">
+                        ${data.message.replace(/\n/g, '<br>')}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer">
+                <p><strong>🎮 PlayCode Agency</strong> - Sistema de CRM Gamificado</p>
+                <p>Este email foi gerado automaticamente pelo sistema de contato do site.</p>
+            </div>
+        </div>
+    </body>
+    </html>
+    `;
   }
 
   private generateWelcomeTemplate(data: {

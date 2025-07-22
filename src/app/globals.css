@@ -24,3 +24,58 @@ body {
 * {
   box-sizing: border-box;
 }
+
+/* Glitch animation for error pages */
+@keyframes glitch-1 {
+  0%, 100% {
+    transform: translate(0);
+    opacity: 0.8;
+  }
+  20% {
+    transform: translate(-2px, 2px);
+    opacity: 0.6;
+  }
+  40% {
+    transform: translate(-2px, -2px);
+    opacity: 0.8;
+  }
+  60% {
+    transform: translate(2px, 2px);
+    opacity: 0.6;
+  }
+  80% {
+    transform: translate(2px, -2px);
+    opacity: 0.8;
+  }
+}
+
+@keyframes glitch-2 {
+  0%, 100% {
+    transform: translate(0);
+    opacity: 0.8;
+  }
+  20% {
+    transform: translate(2px, -2px);
+    opacity: 0.6;
+  }
+  40% {
+    transform: translate(2px, 2px);
+    opacity: 0.8;
+  }
+  60% {
+    transform: translate(-2px, -2px);
+    opacity: 0.6;
+  }
+  80% {
+    transform: translate(-2px, 2px);
+    opacity: 0.8;
+  }
+}
+
+.animate-glitch-1 {
+  animation: glitch-1 0.3s ease-in-out infinite;
+}
+
+.animate-glitch-2 {
+  animation: glitch-2 0.3s ease-in-out infinite reverse;
+}

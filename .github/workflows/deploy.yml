@@ -1,0 +1,204 @@
+name: 🚀 Deploy PlayCode Agency
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+env:
+  NODE_VERSION: '18'
+
+jobs:
+  # Job de teste e validação
+  test:
+    name: 🧪 Test & Validate
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: 📂 Checkout Code
+      uses: actions/checkout@v4
+      
+    - name: 📦 Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+        
+    - name: 🔧 Install Dependencies
+      run: npm ci
+      
+    - name: 🏗️ Build Application
+      run: npm run build
+      env:
+        # Variáveis necessárias para build
+        NEXT_PUBLIC_SITE_URL: ${{ secrets.NEXT_PUBLIC_SITE_URL || 'https://playcode.agency' }}
+        NODE_ENV: production
+        
+    - name: 🧪 Run Tests (if available)
+      run: |
+        if [ -f "package.json" ] && grep -q '"test"' package.json; then
+          npm run test --if-present
+        else
+          echo "No tests configured"
+        fi
+        
+    - name: 🔍 Type Check
+      run: |
+        if [ -f "tsconfig.json" ]; then
+          npx tsc --noEmit
+        fi
+        
+    - name: 📊 Bundle Analysis
+      run: |
+        if [ -f "package.json" ] && grep -q '"analyze"' package.json; then
+          npm run analyze --if-present
+        fi
+
+  # Job de deploy para Vercel
+  deploy-vercel:
+    name: 🌐 Deploy to Vercel
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    
+    steps:
+    - name: 📂 Checkout Code
+      uses: actions/checkout@v4
+      
+    - name: 🚀 Deploy to Vercel
+      uses: amondnet/vercel-action@v25
+      with:
+        vercel-token: ${{ secrets.VERCEL_TOKEN }}
+        vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+        vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+        vercel-args: '--prod'
+
+  # Job de deploy para servidor próprio
+  deploy-production:
+    name: 🏭 Deploy to Production Server
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push' && contains(github.event.head_commit.message, '[deploy-prod]')
+    
+    steps:
+    - name: 📂 Checkout Code
+      uses: actions/checkout@v4
+      
+    - name: 📦 Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+        
+    - name: 🔧 Install Dependencies
+      run: npm ci --production
+      
+    - name: 🏗️ Build for Production
+      run: npm run build
+      env:
+        NODE_ENV: production
+        NEXT_PUBLIC_SITE_URL: ${{ secrets.NEXT_PUBLIC_SITE_URL }}
+        
+    - name: 📦 Create Deployment Package
+      run: |
+        tar -czf playcode-agency-${{ github.sha }}.tar.gz \
+          --exclude=node_modules \
+          --exclude=.git \
+          --exclude=.github \
+          --exclude="*.tar.gz" \
+          .
+          
+    - name: 🚀 Deploy to Production Server
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ secrets.PROD_SERVER_HOST }}
+        username: ${{ secrets.PROD_SERVER_USER }}
+        key: ${{ secrets.PROD_SERVER_KEY }}
+        port: ${{ secrets.PROD_SERVER_PORT }}
+        script: |
+          cd /var/www/playcode-agency
+          
+          # Backup atual
+          tar -czf backup-$(date +%Y%m%d-%H%M%S).tar.gz .next
+          
+          # Download e extração
+          wget -O latest.tar.gz "https://github.com/${{ github.repository }}/archive/${{ github.sha }}.tar.gz"
+          tar -xzf latest.tar.gz --strip-components=1
+          
+          # Install e build
+          npm ci --production
+          npm run build
+          
+          # Restart PM2
+          pm2 restart playcode-agency
+          pm2 save
+          
+          # Cleanup
+          rm -f latest.tar.gz
+          find . -name "backup-*.tar.gz" -mtime +7 -delete
+
+  # Job de testes pós-deploy
+  post-deploy-tests:
+    name: 🔍 Post-Deploy Health Check
+    needs: [deploy-vercel]
+    runs-on: ubuntu-latest
+    if: always() && (needs.deploy-vercel.result == 'success' || needs.deploy-production.result == 'success')
+    
+    steps:
+    - name: 🏥 Health Check
+      run: |
+        # Aguardar deploy propagar
+        sleep 30
+        
+        SITE_URL="${{ secrets.NEXT_PUBLIC_SITE_URL || 'https://playcode-agency.vercel.app' }}"
+        
+        # Testar home page
+        if curl -f -s "$SITE_URL" > /dev/null; then
+          echo "✅ Home page OK"
+        else
+          echo "❌ Home page failed"
+          exit 1
+        fi
+        
+        # Testar páginas principais
+        PAGES=("/sobre" "/servicos" "/portfolio" "/planos" "/combos" "/contato")
+        for page in "${PAGES[@]}"; do
+          if curl -f -s "$SITE_URL$page" > /dev/null; then
+            echo "✅ $page OK"
+          else
+            echo "❌ $page failed"
+          fi
+        done
+        
+    - name: 📊 Performance Check
+      run: |
+        echo "🚀 Deploy concluído com sucesso!"
+        echo "📋 Próximos passos manuais:"
+        echo "- Testar formulário de contato"
+        echo "- Verificar emails"
+        echo "- Validar performance no PageSpeed"
+        echo "- Configurar monitoramento"
+
+  # Job para notificação
+  notify:
+    name: 📢 Deploy Notification
+    needs: [test, deploy-vercel, post-deploy-tests]
+    runs-on: ubuntu-latest
+    if: always()
+    
+    steps:
+    - name: 📧 Send Notification
+      run: |
+        STATUS="✅ Sucesso"
+        if [[ "${{ needs.test.result }}" == "failure" ]]; then
+          STATUS="❌ Falha nos testes"
+        elif [[ "${{ needs.deploy-vercel.result }}" == "failure" ]]; then
+          STATUS="❌ Falha no deploy"
+        elif [[ "${{ needs.post-deploy-tests.result }}" == "failure" ]]; then
+          STATUS="⚠️ Deploy OK, mas health check falhou"
+        fi
+        
+        echo "🎮 PlayCode Agency Deploy: $STATUS"
+        echo "📊 Commit: ${{ github.event.head_commit.message }}"
+        echo "🔗 URL: ${{ secrets.NEXT_PUBLIC_SITE_URL || 'https://playcode-agency.vercel.app' }}"

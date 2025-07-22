@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import { secureContactSchema, EnhancedRateLimit, MemoryRateLimitStore, IPSecurity, SecurityMonitor } from '@/lib/security/input-validation'
+import { EmailService } from '@/lib/services/email'
 
 // Enhanced rate limiting - more permissive in development
 const contactRateLimit = new EnhancedRateLimit(
@@ -8,6 +9,8 @@ const contactRateLimit = new EnhancedRateLimit(
   process.env.NODE_ENV === 'development' ? 5 * 60 * 1000 : 15 * 60 * 1000, // 5 min dev, 15 min prod
   process.env.NODE_ENV === 'development' ? 10 : 3 // 10 attempts in dev, 3 in prod
 )
+
+const emailService = new EmailService();
 
 // Security tracking - for future security monitoring dashboard
 // const securityEvents = new Map<string, number>()
@@ -86,52 +89,24 @@ export async function POST(request: NextRequest) {
     
     const validatedData = secureContactSchema.parse(body)
 
-    // Simulate email sending (replace with actual SendGrid implementation)
-    const emailData = {
-      to: process.env.FROM_EMAIL || 'contact@playcode.agency',
-      from: process.env.FROM_EMAIL || 'noreply@playcode.agency',
-      subject: `🎮 Nova missão recebida: ${validatedData.name}`,
-      html: generateEmailHTML({
+    // Tentar enviar email usando o EmailService
+    try {
+      await emailService.sendContactFormEmail({
         ...validatedData,
-        approvalInstructions
-      } as any)
+        lead_score: body.lead_score || 0,
+        project_type: body.project_type,
+        budget_range: body.budget_range,
+        urgency: body.urgency,
+      });
+      console.log('✅ Email enviado com sucesso')
+    } catch (emailError) {
+      console.error('❌ Erro ao enviar email:', emailError)
+      // Continue o processo mesmo se o email falhar - não queremos perder o lead
+      console.log('⚠️ Continuando processo apesar do erro de email')
     }
-
-    // TODO: Implement actual email sending with SendGrid
-    console.log('📧 Email would be sent:', emailData)
 
     // TODO: Save to database
     console.log('💾 Contact would be saved to database:', validatedData)
-
-    // Se tem informações suficientes para orçamento, incluir link para envio de aprovação
-    let approvalInstructions = ''
-    if (validatedData.name && validatedData.email && body.project_type && body.budget_range) {
-      approvalInstructions = `
-        
-        🎯 <strong>Para Equipe - Processo de Orçamento:</strong>
-        <div style="background: #2A2A3A; padding: 15px; border-radius: 8px; margin: 10px 0;">
-          <p>Cliente possui informações completas para orçamento:</p>
-          <ul>
-            <li>Nome: ${validatedData.name}</li>
-            <li>Email: ${validatedData.email}</li>
-            <li>Projeto: ${body.project_type}</li>
-            <li>Orçamento: ${body.budget_range}</li>
-            <li>Empresa: ${validatedData.company || 'Não informado'}</li>
-            <li>Telefone: ${validatedData.phone || 'Não informado'}</li>
-          </ul>
-          
-          <p><strong>Próximos passos:</strong></p>
-          <ol>
-            <li>Analisar requisitos e preparar orçamento detalhado</li>
-            <li>Usar API <code>/api/approval/send</code> para enviar proposta</li>
-            <li>Cliente receberá email com botões de Aprovar/Rejeitar</li>
-            <li>Notificação automática do resultado para equipe</li>
-          </ol>
-          
-          <p><em>Dados prontos para sistema de aprovação automática!</em></p>
-        </div>
-      `
-    }
 
     // CRM Integration (optional)
     try {
@@ -224,63 +199,4 @@ export async function POST(request: NextRequest) {
       { status: 500 }
     )
   }
-}
-
-function generateEmailHTML(data: {
-  name: string;
-  email: string;
-  company?: string;
-  phone?: string;
-  message: string;
-  powerUps?: string[];
-  gameMode?: string;
-}): string {
-  return `
-    <!DOCTYPE html>
-    <html>
-    <head>
-      <style>
-        body { font-family: 'Arial', sans-serif; background: #0A0A0F; color: #FFFFFF; }
-        .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-        .header { background: linear-gradient(135deg, #0070D1, #8B5CF6, #00FFFF); padding: 20px; border-radius: 10px; text-align: center; }
-        .content { background: #1E1E2E; padding: 30px; border-radius: 10px; margin-top: 20px; }
-        .power-up { background: #2A2A3A; padding: 10px; margin: 5px 0; border-radius: 5px; border-left: 3px solid #00FFFF; }
-        .footer { text-align: center; margin-top: 20px; color: #888; }
-      </style>
-    </head>
-    <body>
-      <div class="container">
-        <div class="header">
-          <h1>🎮 NOVA MISSÃO RECEBIDA</h1>
-          <p>PlayCode Agency - Gaming Digital Solutions</p>
-        </div>
-        
-        <div class="content">
-          <h2>📋 Detalhes da Missão</h2>
-          
-          <p><strong>👤 Player:</strong> ${data.name}</p>
-          <p><strong>📧 Email:</strong> ${data.email}</p>
-          ${data.company ? `<p><strong>🏢 Empresa:</strong> ${data.company}</p>` : ''}
-          ${data.phone ? `<p><strong>📱 Telefone:</strong> ${data.phone}</p>` : ''}
-          ${data.gameMode ? `<p><strong>🎮 Modo de Jogo:</strong> ${data.gameMode.toUpperCase()}</p>` : ''}
-          
-          <h3>💬 Mensagem:</h3>
-          <div class="power-up">${data.message}</div>
-          
-          ${data.powerUps && data.powerUps.length > 0 ? `
-            <h3>⚡ Power-ups Selecionados:</h3>
-            ${data.powerUps.map((powerUp: string) => `<div class="power-up">${powerUp}</div>`).join('')}
-          ` : ''}
-          
-          ${(data as any).approvalInstructions || ''}
-        </div>
-        
-        <div class="footer">
-          <p>🚀 Processado em ${new Date().toLocaleString('pt-BR')}</p>
-          <p>PlayCode Agency - Transformando visões em realidade digital</p>
-        </div>
-      </div>
-    </body>
-    </html>
-  `
 }

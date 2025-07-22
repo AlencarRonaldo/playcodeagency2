@@ -250,10 +250,17 @@ export default function Footer() {
                   <PixelLogo size="md" animated={true} />
                 </Link>
 
-                <p className="gaming-subtitle text-sm text-led-white/80 mb-6 leading-relaxed">
+                <p className="gaming-subtitle text-sm text-led-white/80 mb-4 leading-relaxed">
                   Transformando ideias em realidades digitais através de tecnologia de ponta, 
                   IA avançada e design inovador. Sua jornada épica começa aqui.
                 </p>
+
+                {/* Slogan */}
+                <div className="gaming-card p-3 border border-plasma-yellow/30 bg-plasma-yellow/5 rounded-md mb-6 max-w-sm">
+                  <div className="gaming-mono text-sm font-bold text-plasma-yellow text-center">
+                    🎯 SUA IDEIA É NOSSO CHEAT CODE PARA O SUCESSO! 💡
+                  </div>
+                </div>
 
                 {/* Contact Info */}
                 <div className="space-y-3">
@@ -389,26 +396,6 @@ export default function Footer() {
           </div>
         </motion.div>
 
-        {/* Achievement Notification */}
-        <motion.div
-          initial={{ opacity: 0, x: -200 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          transition={{ delay: 1, duration: 0.8 }}
-          viewport={{ once: true }}
-          className="fixed bottom-6 left-6 gaming-card p-4 border-laser-green bg-laser-green/10 max-w-xs z-30"
-        >
-          <div className="flex items-center gap-3">
-            <div className="text-2xl">📧</div>
-            <div>
-              <div className="gaming-mono text-xs text-laser-green font-bold">
-                NEWSLETTER ACHIEVEMENT
-              </div>
-              <div className="gaming-mono text-xs text-led-white">
-                Stay updated +25 XP
-              </div>
-            </div>
-          </div>
-        </motion.div>
       </div>
     </footer>
   )

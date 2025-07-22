@@ -149,7 +149,54 @@ export default function ServicosPage() {
   if (!mounted) return null
 
   return (
-    <div className="min-h-screen bg-gradient-console">
+    <main className="min-h-screen bg-gradient-console">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Service",
+            "provider": {
+              "@type": "Organization",
+              "name": "PlayCode Agency",
+              "url": "https://playcodeagency.xyz"
+            },
+            "serviceType": "Desenvolvimento Web e Inteligência Artificial",
+            "description": "Serviços especializados em desenvolvimento web, criação de aplicativos e integração de IA",
+            "areaServed": "BR",
+            "hasOfferCatalog": {
+              "@type": "OfferCatalog",
+              "name": "Serviços de Desenvolvimento",
+              "itemListElement": [
+                {
+                  "@type": "Offer",
+                  "itemOffered": {
+                    "@type": "Service",
+                    "name": "Desenvolvimento Web",
+                    "description": "Aplicações web modernas com React, Next.js e tecnologias de ponta"
+                  }
+                },
+                {
+                  "@type": "Offer",
+                  "itemOffered": {
+                    "@type": "Service",
+                    "name": "Desenvolvimento Mobile",
+                    "description": "Apps nativos e híbridos para iOS e Android"
+                  }
+                },
+                {
+                  "@type": "Offer",
+                  "itemOffered": {
+                    "@type": "Service",
+                    "name": "Integração de IA",
+                    "description": "Implementação de inteligência artificial e chatbots"
+                  }
+                }
+              ]
+            }
+          })
+        }}
+      />
       {/* Matrix Rain Background */}
       <div className="matrix-rain">
         {Array.from({ length: 20 }).map((_, i) => (
@@ -199,12 +246,12 @@ export default function ServicosPage() {
             className="flex justify-center space-x-8 mb-12"
           >
             <div className="text-center">
-              <div className="gaming-display text-3xl font-bold text-laser-green">500+</div>
+              <div className="gaming-display text-3xl font-bold text-laser-green">50+</div>
               <div className="gaming-mono text-sm text-led-white/60">PROJETOS</div>
             </div>
             <div className="text-center">
-              <div className="gaming-display text-3xl font-bold text-plasma-yellow">98%</div>
-              <div className="gaming-mono text-sm text-led-white/60">SATISFAÇÃO</div>
+              <div className="gaming-display text-3xl font-bold text-plasma-yellow">40+</div>
+              <div className="gaming-mono text-sm text-led-white/60">CLIENTES</div>
             </div>
             <div className="text-center">
               <div className="gaming-display text-3xl font-bold text-magenta-power">24/7</div>
@@ -475,6 +522,6 @@ export default function ServicosPage() {
           </div>
         </motion.div>
       </div>
-    </div>
+    </main>
   )
 }

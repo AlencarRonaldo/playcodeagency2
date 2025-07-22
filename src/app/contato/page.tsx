@@ -105,11 +105,11 @@ export default function ContatoPage() {
   ]
 
   const budgetRanges = [
-    { value: 'startup', label: '💡 Startup (R$ 5K - 15K)', multiplier: 1 },
-    { value: 'small', label: '🏢 Small Business (R$ 15K - 50K)', multiplier: 1.5 },
-    { value: 'medium', label: '🏗️ Medium Enterprise (R$ 50K - 150K)', multiplier: 2 },
-    { value: 'large', label: '🏛️ Large Enterprise (R$ 150K+)', multiplier: 3 },
-    { value: 'custom', label: '💎 Custom Budget', multiplier: 2.5 }
+    { value: 'starter', label: '🎯 Starter Pack (R$ 797 - R$ 1.497)', multiplier: 1 },
+    { value: 'business', label: '🏢 Business One (R$ 1.497 - R$ 2.497)', multiplier: 1.5 },
+    { value: 'pro', label: '🚀 Pro Guild (R$ 2.497 - R$ 5.000)', multiplier: 2 },
+    { value: 'enterprise', label: '🏛️ Enterprise (R$ 5.000+)', multiplier: 2.5 },
+    { value: 'custom', label: '💎 Orçamento Personalizado', multiplier: 2.2 }
   ]
 
   const urgencyLevels = [
@@ -167,11 +167,23 @@ export default function ContatoPage() {
       return
     }
     
+    // Reset status and start submission
+    setSubmitStatus('idle')
     setIsSubmitting(true)
     audioHelpers.playClick(true)
     
     try {
       const leadScore = calculateLeadScore()
+      
+      console.log('📝 Enviando formulário de contato:', {
+        name: formData.name,
+        email: formData.email,
+        project_type: formData.project_type,
+        lead_score: leadScore
+      })
+      
+      const controller = new AbortController()
+      const timeoutId = setTimeout(() => controller.abort(), 30000) // 30 second timeout
       
       const response = await fetch('/api/contact', {
         method: 'POST',
@@ -181,32 +193,79 @@ export default function ContatoPage() {
           lead_score: leadScore,
           submitted_at: new Date().toISOString(),
           source: 'contact_page'
-        })
+        }),
+        signal: controller.signal
       })
       
+      clearTimeout(timeoutId)
+      
+      console.log('📝 Response status:', response.status)
+      console.log('📝 Response ok:', response.ok)
+      console.log('📝 Response headers:', Object.fromEntries(response.headers.entries()))
+      
       if (response.ok) {
-        setSubmitStatus('success')
-        audioHelpers.playAchievementUnlocked('epic')
-        
-        // Track achievement
-        trackingHelpers.trackContactForm({
-          project_type: formData.project_type,
-          budget_range: formData.budget_range,
-          lead_score: leadScore
-        })
-        
-        // Reset form
-        setFormData({
-          name: '', email: '', phone: '', company: '',
-          project_type: '', budget_range: '', message: '', urgency: 'normal'
-        })
+        try {
+          const responseData = await response.json()
+          console.log('📝 Response data:', responseData)
+          
+          setSubmitStatus('success')
+          audioHelpers.playAchievementUnlocked('epic')
+          
+          // Track achievement
+          trackingHelpers.trackContactForm({
+            project_type: formData.project_type,
+            budget_range: formData.budget_range,
+            lead_score: leadScore
+          })
+          
+          // Reset form
+          setFormData({
+            name: '', email: '', phone: '', company: '',
+            project_type: '', budget_range: '', message: '', urgency: 'normal'
+          })
+        } catch (parseError) {
+          console.error('📝 Error parsing success response:', parseError)
+          setSubmitStatus('error')
+          audioHelpers.playError()
+        }
         
       } else {
-        throw new Error('Submission failed')
+        // Handle API error response
+        try {
+          const errorData = await response.text()
+          console.error('API Error Response:', {
+            status: response.status,
+            statusText: response.statusText,
+            body: errorData
+          })
+        } catch (readError) {
+          console.error('📝 Error reading error response:', readError)
+        }
+        setSubmitStatus('error')
+        audioHelpers.playError()
       }
       
     } catch (error) {
       console.error('Contact form error:', error)
+      
+      // Detailed error logging
+      if (error instanceof Error) {
+        console.error('📝 Error details:', {
+          name: error.name,
+          message: error.message,
+          stack: error.stack
+        })
+        
+        // Check for specific error types
+        if (error.name === 'AbortError') {
+          console.error('📝 Request timed out after 30 seconds')
+        } else if (error.name === 'TypeError' && error.message.includes('fetch')) {
+          console.error('📝 Network error - check connection')
+        }
+      } else {
+        console.error('📝 Unknown error type:', typeof error, error)
+      }
+      
       setSubmitStatus('error')
       audioHelpers.playError()
     } finally {
@@ -229,7 +288,49 @@ export default function ContatoPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-console relative overflow-hidden">
+    <main className="min-h-screen bg-gradient-console relative overflow-hidden">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "ContactPage",
+            "mainEntity": {
+              "@type": "Organization",
+              "name": "PlayCode Agency",
+              "contactPoint": [
+                {
+                  "@type": "ContactPoint",
+                  "telephone": "+55-11-95653-4963",
+                  "contactType": "Atendimento ao Cliente",
+                  "availableLanguage": "Portuguese",
+                  "serviceArea": {
+                    "@type": "Country",
+                    "name": "Brasil"
+                  },
+                  "hoursAvailable": "24/7"
+                },
+                {
+                  "@type": "ContactPoint",
+                  "email": "contato@playcodeagency.xyz",
+                  "contactType": "Suporte Técnico",
+                  "responseTime": "PT2H"
+                }
+              ],
+              "address": {
+                "@type": "PostalAddress",
+                "addressLocality": "São Bernardo do Campo",
+                "addressRegion": "SP",
+                "addressCountry": "BR"
+              },
+              "openingHours": "Mo-Su 00:00-23:59",
+              "sameAs": [
+                "https://wa.me/5511956534963"
+              ]
+            }
+          })
+        }}
+      />
       {/* Circuit Pattern Background */}
       <div className="absolute inset-0 circuit-pattern opacity-10 pointer-events-none" />
       
@@ -586,6 +687,6 @@ export default function ContatoPage() {
           </motion.div>
         </div>
       </div>
-    </div>
+    </main>
   )
 }

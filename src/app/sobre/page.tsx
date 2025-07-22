@@ -160,12 +160,12 @@ const COMPANY_VALUES: CompanyValue[] = [
 ]
 
 const COMPANY_STATS = [
-  { label: 'Projetos Concluídos', value: '500+', color: 'text-laser-green' },
-  { label: 'Clientes Satisfeitos', value: '200+', color: 'text-neon-cyan' },
-  { label: 'Linhas de Código', value: '2M+', color: 'text-plasma-yellow' },
-  { label: 'Anos de Experiência', value: '25+', color: 'text-magenta-power' },
-  { label: 'Tecnologias Dominadas', value: '50+', color: 'text-electric-blue' },
-  { label: 'Awards Conquistados', value: '15+', color: 'text-gaming-purple' }
+  { label: 'Projetos Concluídos', value: '50+', color: 'text-laser-green' },
+  { label: 'Clientes Satisfeitos', value: '40+', color: 'text-neon-cyan' },
+  { label: 'Linhas de Código', value: '500K+', color: 'text-plasma-yellow' },
+  { label: 'Anos de Experiência', value: '10+', color: 'text-magenta-power' },
+  { label: 'Tecnologias Dominadas', value: '25+', color: 'text-electric-blue' },
+  { label: 'Awards Conquistados', value: '8+', color: 'text-gaming-purple' }
 ]
 
 export default function SobrePage() {
@@ -192,7 +192,47 @@ export default function SobrePage() {
   if (!mounted) return null
 
   return (
-    <div className="min-h-screen bg-gradient-console">
+    <main className="min-h-screen bg-gradient-console">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "AboutPage",
+            "mainEntity": {
+              "@type": "Organization",
+              "name": "PlayCode Agency",
+              "foundingDate": "2014",
+              "description": "Agência especializada em desenvolvimento web e inteligência artificial",
+              "employee": [
+                {
+                  "@type": "Person",
+                  "name": "Ronaldo Carvalho",
+                  "jobTitle": "AI/ML Specialist & Systems Analyst",
+                  "description": "10+ anos de experiência em desenvolvimento e análise de sistemas"
+                },
+                {
+                  "@type": "Person",
+                  "name": "Rones Carvalho",
+                  "jobTitle": "Lead Frontend Developer",
+                  "description": "6+ anos de experiência em UI/UX e desenvolvimento frontend"
+                }
+              ],
+              "numberOfEmployees": "4-10",
+              "award": "15+ prêmios conquistados",
+              "foundingLocation": {
+                "@type": "Place",
+                "address": {
+                  "@type": "PostalAddress",
+                  "addressLocality": "São Bernardo do Campo",
+                  "addressRegion": "São Paulo",
+                  "addressCountry": "BR"
+                }
+              }
+            }
+          })
+        }}
+      />
       {/* Matrix Rain Background */}
       <div className="matrix-rain">
         {Array.from({ length: 20 }).map((_, i) => (
@@ -533,9 +573,9 @@ export default function SobrePage() {
           <div className="grid md:grid-cols-3 gap-8">
             {[
               {
-                year: '2009',
+                year: '2014',
                 title: 'Origem da Guild',
-                description: 'Nossa jornada iniciou-se com infraestrutura de TI: cabeamento de rede, montagem de racks, implementação de lojas e frentes de caixa. Evoluímos através de suporte técnico, CFTV, manutenção de equipamentos e liderança de equipes N1/N2, construindo uma base sólida de experiência tecnológica.',
+                description: 'Nossa jornada iniciou-se com infraestrutura de TI e suporte técnico. Evoluímos construindo uma base sólida de experiência tecnológica e atendimento ao cliente.',
                 icon: Users,
                 color: 'text-neon-cyan'
               },
@@ -626,6 +666,6 @@ export default function SobrePage() {
           </div>
         </motion.div>
       </div>
-    </div>
+    </main>
   )
 }

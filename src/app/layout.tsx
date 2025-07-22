@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Orbitron, Exo_2, JetBrains_Mono, Rajdhani } from "next/font/google";
 import "./globals.css";
 import "@/lib/polyfills";
@@ -34,15 +34,73 @@ const rajdhani = Rajdhani({
 });
 
 export const metadata: Metadata = {
-  title: "PlayCode Agency - Gaming Digital Solutions",
-  description: "Transforme sua visão em realidade digital com soluções gaming inovadoras, IA avançada e tecnologias emergentes.",
-  keywords: ["gaming", "desenvolvimento", "IA", "web development", "cyberpunk", "tecnologia"],
-  authors: [{ name: "PlayCode Agency" }],
-  openGraph: {
-    title: "PlayCode Agency - Gaming Digital Solutions",
-    description: "Desenvolva aplicações que conquistam o mundo gaming",
-    type: "website",
+  title: {
+    default: "PlayCode Agency - Desenvolvimento Web e IA | Criação de Sites Profissionais",
+    template: "%s | PlayCode Agency"
   },
+  description: "Sua ideia é nosso cheat code para o sucesso! Transforme seu negócio com desenvolvimento web profissional, integração de IA e soluções digitais personalizadas. 10 anos de experiência, 50+ projetos entregues e 40+ clientes satisfeitos.",
+  keywords: [
+    "desenvolvimento web", "criação de sites", "programação", "desenvolvimento de aplicativos",
+    "inteligência artificial", "IA", "chatbot", "automação", "web design responsivo",
+    "e-commerce", "sistema web", "landing page", "site profissional", "tecnologia",
+    "React", "Next.js", "TypeScript", "Node.js", "desenvolvimento frontend", "backend",
+    "São Paulo", "Brasil", "agência digital", "consultoria tecnológica",
+    "otimização SEO", "performance web", "experiência do usuário", "UX/UI"
+  ],
+  authors: [{ name: "PlayCode Agency", url: "https://playcodeagency.xyz" }],
+  creator: "PlayCode Agency",
+  publisher: "PlayCode Agency",
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+  openGraph: {
+    type: "website",
+    locale: "pt_BR",
+    url: "https://playcodeagency.xyz",
+    title: "PlayCode Agency - Desenvolvimento Web Profissional e Inteligência Artificial",
+    description: "Sua ideia é nosso cheat code para o sucesso! Criamos soluções web inovadoras com IA, desenvolvimento profissional de sites, apps e sistemas que transformam negócios. 10 anos de experiência com resultados comprovados.",
+    siteName: "PlayCode Agency",
+    images: [
+      {
+        url: "/og-image.jpg",
+        width: 1200,
+        height: 630,
+        alt: "PlayCode Agency - Desenvolvimento Web e IA Profissional",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "PlayCode Agency - Desenvolvimento Web e IA",
+    description: "Sua ideia é nosso cheat code para o sucesso! Transformamos ideias em soluções digitais com desenvolvimento profissional, IA e tecnologias avançadas.",
+    images: ["/twitter-image.jpg"],
+    creator: "@playcodeagency",
+  },
+  verification: {
+    google: "sua-chave-google-search-console",
+  },
+  alternates: {
+    canonical: "https://playcodeagency.xyz",
+    languages: {
+      'pt-BR': "https://playcodeagency.xyz",
+    },
+  },
+  category: "technology",
+  classification: "Desenvolvimento Web, Inteligência Artificial, Consultoria Tecnológica",
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
 };
 
 export default function RootLayout({
@@ -51,7 +109,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="pt-BR">
+    <html lang="pt-BR" itemScope itemType="https://schema.org/Organization">
       <body
         className={`${orbitron.variable} ${exo.variable} ${jetbrainsMono.variable} ${rajdhani.variable} antialiased`}
       >

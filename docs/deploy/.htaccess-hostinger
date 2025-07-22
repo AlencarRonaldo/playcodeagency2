@@ -1,0 +1,211 @@
+# .htaccess para PlayCode Agency - Hostinger Hospedagem Compartilhada
+# Copie este arquivo para public_html/.htaccess
+
+# ============================
+# REDIRECIONAMENTO HTTPS
+# ============================
+RewriteEngine On
+RewriteCond %{HTTPS} off
+RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# ============================
+# COMPRESSÃO GZIP
+# ============================
+<IfModule mod_deflate.c>
+    # Compress HTML, CSS, JavaScript, Text, XML and fonts
+    AddOutputFilterByType DEFLATE application/javascript
+    AddOutputFilterByType DEFLATE application/rss+xml
+    AddOutputFilterByType DEFLATE application/vnd.ms-fontobject
+    AddOutputFilterByType DEFLATE application/x-font
+    AddOutputFilterByType DEFLATE application/x-font-opentype
+    AddOutputFilterByType DEFLATE application/x-font-otf
+    AddOutputFilterByType DEFLATE application/x-font-truetype
+    AddOutputFilterByType DEFLATE application/x-font-ttf
+    AddOutputFilterByType DEFLATE application/x-javascript
+    AddOutputFilterByType DEFLATE application/xhtml+xml
+    AddOutputFilterByType DEFLATE application/xml
+    AddOutputFilterByType DEFLATE font/opentype
+    AddOutputFilterByType DEFLATE font/otf
+    AddOutputFilterByType DEFLATE font/ttf
+    AddOutputFilterByType DEFLATE image/svg+xml
+    AddOutputFilterByType DEFLATE image/x-icon
+    AddOutputFilterByType DEFLATE text/css
+    AddOutputFilterByType DEFLATE text/html
+    AddOutputFilterByType DEFLATE text/javascript
+    AddOutputFilterByType DEFLATE text/plain
+    AddOutputFilterByType DEFLATE text/xml
+</IfModule>
+
+# ============================
+# CACHE CONTROLE
+# ============================
+<IfModule mod_expires.c>
+    ExpiresActive On
+    
+    # Images
+    ExpiresByType image/jpg "access plus 1 year"
+    ExpiresByType image/jpeg "access plus 1 year"
+    ExpiresByType image/gif "access plus 1 year"
+    ExpiresByType image/png "access plus 1 year"
+    ExpiresByType image/webp "access plus 1 year"
+    ExpiresByType image/svg+xml "access plus 1 month"
+    ExpiresByType image/x-icon "access plus 1 year"
+    
+    # Video
+    ExpiresByType video/mp4 "access plus 1 year"
+    ExpiresByType video/webm "access plus 1 year"
+    
+    # Audio
+    ExpiresByType audio/mp3 "access plus 1 year"
+    ExpiresByType audio/ogg "access plus 1 year"
+    ExpiresByType audio/wav "access plus 1 year"
+    
+    # CSS and JavaScript
+    ExpiresByType text/css "access plus 1 month"
+    ExpiresByType application/javascript "access plus 1 month"
+    ExpiresByType text/javascript "access plus 1 month"
+    
+    # Fonts
+    ExpiresByType font/woff2 "access plus 1 year"
+    ExpiresByType font/woff "access plus 1 year"
+    ExpiresByType font/ttf "access plus 1 year"
+    ExpiresByType font/otf "access plus 1 year"
+    ExpiresByType application/font-woff "access plus 1 year"
+    
+    # Documents
+    ExpiresByType application/pdf "access plus 1 month"
+    ExpiresByType text/plain "access plus 1 month"
+</IfModule>
+
+# ============================
+# HEADERS DE SEGURANÇA
+# ============================
+<IfModule mod_headers.c>
+    # Prevent clickjacking
+    Header always set X-Frame-Options DENY
+    
+    # Prevent MIME type sniffing
+    Header always set X-Content-Type-Options nosniff
+    
+    # Enable XSS filtering
+    Header always set X-XSS-Protection "1; mode=block"
+    
+    # Referrer Policy
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    
+    # Content Security Policy (básico)
+    Header always set Content-Security-Policy "default-src 'self' 'unsafe-inline' 'unsafe-eval' data: https:; img-src 'self' data: https:; font-src 'self' data: https:;"
+    
+    # Permissions Policy
+    Header always set Permissions-Policy "camera=(), microphone=(), geolocation=()"
+    
+    # Cache control for static assets
+    <FilesMatch "\.(css|js|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|otf)$">
+        Header set Cache-Control "public, max-age=31536000, immutable"
+    </FilesMatch>
+    
+    # Cache control for HTML
+    <FilesMatch "\.(html|htm)$">
+        Header set Cache-Control "public, max-age=3600"
+    </FilesMatch>
+</IfModule>
+
+# ============================
+# URLS AMIGÁVEIS
+# ============================
+RewriteEngine On
+
+# Remove trailing slash from directories
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{THE_REQUEST} /+([^?]+?)/?(\?[^\s]*)?[\s] [NC]
+RewriteRule ^ /%1/ [R=301,L]
+
+# Remove .html extension from URLs
+RewriteCond %{THE_REQUEST} /+([^?]+?)\.html[\s?] [NC]
+RewriteRule ^ /%1/ [R=301,L]
+
+# Add .html extension internally
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^([^./]+)/?$ $1.html [L]
+
+# Redirect index.html to root
+RewriteRule ^index\.html$ / [R=301,L]
+
+# ============================
+# PÁGINAS DE ERRO
+# ============================
+ErrorDocument 404 /404.html
+ErrorDocument 403 /403.html
+ErrorDocument 500 /500.html
+
+# ============================
+# PROTEÇÃO DE ARQUIVOS
+# ============================
+# Protect sensitive files
+<FilesMatch "(^#.*#|\.(bak|conf|dist|fla|inc|ini|log|psd|sh|sql|sw[op])|~)$">
+    Order allow,deny
+    Deny from all
+    Satisfy All
+</FilesMatch>
+
+# Protect .htaccess
+<Files ".htaccess">
+    Order allow,deny
+    Deny from all
+</Files>
+
+# ============================
+# REDIRECTS ESPECÍFICOS
+# ============================
+# Redirects para páginas antigas (se necessário)
+# Redirect 301 /old-page.html /nova-pagina/
+# Redirect 301 /antigo-servico.html /servicos/
+
+# ============================
+# MIME TYPES
+# ============================
+<IfModule mod_mime.c>
+    # Video
+    AddType video/mp4 .mp4
+    AddType video/webm .webm
+    
+    # Audio
+    AddType audio/mp3 .mp3
+    AddType audio/ogg .ogg
+    AddType audio/wav .wav
+    
+    # Fonts
+    AddType font/woff2 .woff2
+    AddType font/woff .woff
+    AddType font/ttf .ttf
+    AddType font/otf .otf
+    
+    # Images
+    AddType image/webp .webp
+    AddType image/svg+xml .svg
+</IfModule>
+
+# ============================
+# PERFORMANCE OPTIMIZATIONS
+# ============================
+# Turn off server signature
+ServerSignature Off
+
+# Disable ETags
+FileETag None
+
+# Force UTF-8 encoding
+AddDefaultCharset UTF-8
+
+# ============================
+# HOSTINGER ESPECÍFICO
+# ============================
+# Disable server-side includes (se não usar)
+Options -Includes
+
+# Prevent access to git files
+RedirectMatch 404 /\.git
+
+# Prevent access to node_modules if uploaded by mistake
+RedirectMatch 404 /node_modules

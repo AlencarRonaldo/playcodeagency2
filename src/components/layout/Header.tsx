@@ -18,8 +18,7 @@ import {
   Linkedin,
   Twitter,
   Star,
-  Settings,
-  Shield
+  Settings
 } from 'lucide-react'
 import { audioHelpers } from '@/lib/hooks/useAudio'
 import { trackingHelpers } from '@/lib/hooks/useAchievements'
@@ -70,12 +69,6 @@ const NAVIGATION: NavItem[] = [
     href: '/combos',
     icon: Star,
     description: 'Stacks tecnológicos recomendados'
-  },
-  {
-    name: 'Admin',
-    href: '/admin',
-    icon: Shield,
-    description: 'Painel administrativo - Centro de comando'
   },
   {
     name: 'Contato',
@@ -189,32 +182,8 @@ export default function Header() {
               })}
             </nav>
 
-            {/* Social Links & CTA */}
+            {/* CTA */}
             <div className="hidden lg:flex items-center gap-4">
-              {/* Social Links */}
-              <div className="flex items-center gap-2">
-                {SOCIAL_LINKS.map((social) => {
-                  const SocialIcon = social.icon
-                  return (
-                    <motion.a
-                      key={social.name}
-                      href={social.href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      whileHover={{ scale: 1.1 }}
-                      whileTap={{ scale: 0.9 }}
-                      onMouseEnter={audioHelpers.playHover}
-                      onClick={() => {
-                        audioHelpers.playClick(false)
-                        trackingHelpers.trackClick(`social_${social.name.toLowerCase()}`)
-                      }}
-                      className={`w-8 h-8 ${social.color} hover:text-neon-cyan transition-colors duration-200`}
-                    >
-                      <SocialIcon size={18} />
-                    </motion.a>
-                  )
-                })}
-              </div>
 
               {/* CTA Button */}
               <motion.div
@@ -330,39 +299,6 @@ export default function Header() {
                   })}
                 </div>
 
-                {/* Social Links */}
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.6 }}
-                  className="mt-8 pt-6 border-t border-neon-cyan/30"
-                >
-                  <div className="gaming-mono text-xs font-bold text-neon-cyan mb-4">
-                    REDES SOCIAIS
-                  </div>
-                  <div className="flex gap-3">
-                    {SOCIAL_LINKS.map((social) => {
-                      const SocialIcon = social.icon
-                      return (
-                        <motion.a
-                          key={social.name}
-                          href={social.href}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          whileHover={{ scale: 1.1 }}
-                          whileTap={{ scale: 0.9 }}
-                          onClick={() => {
-                            audioHelpers.playClick(false)
-                            trackingHelpers.trackClick(`mobile_social_${social.name.toLowerCase()}`)
-                          }}
-                          className={`w-12 h-12 ${social.color} border border-current/30 rounded-lg flex items-center justify-center hover:bg-current/10 transition-all duration-200`}
-                        >
-                          <SocialIcon size={20} />
-                        </motion.a>
-                      )
-                    })}
-                  </div>
-                </motion.div>
 
                 {/* CTA Button */}
                 <motion.div

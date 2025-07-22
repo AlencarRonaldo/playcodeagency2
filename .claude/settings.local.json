@@ -32,7 +32,21 @@
       "Bash(cat:*)",
       "Bash(touch:*)",
       "WebFetch(domain:nextjs.org)",
-      "Bash(npx playwright test:*)"
+      "Bash(npx playwright test:*)",
+      "Bash(npx next lint:*)",
+      "Bash(taskkill:*)",
+      "Bash(npm ci:*)",
+      "Bash(timeout 30 npm run dev)",
+      "Bash(move:*)",
+      "Bash(cmd /c \"move src\\app\\favicon.ico public\\favicon.ico\")",
+      "Bash(dir:*)",
+      "Bash(cp:*)",
+      "Bash(npx tsc:*)",
+      "Bash(test:*)",
+      "Bash(echo:*)",
+      "Bash(chmod:*)",
+      "Bash(mv:*)",
+      "Bash(./build-hostinger.bat)"
     ],
     "deny": []
   }
