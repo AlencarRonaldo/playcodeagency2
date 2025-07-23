@@ -129,9 +129,9 @@ const SOCIAL_LINKS = [
 ]
 
 const STATS = [
-  { label: 'Projetos Entregues', value: '500+', icon: Award },
-  { label: 'Clientes Satisfeitos', value: '200+', icon: Users },
-  { label: 'Anos de Experiência', value: '25+', icon: Clock },
+  { label: 'Projetos Entregues', value: '40', icon: Award },
+  { label: 'Clientes Satisfeitos', value: '40', icon: Users },
+  { label: 'Anos de Experiência', value: '10', icon: Clock },
   { label: 'Uptime Garantido', value: '99.9%', icon: Shield }
 ]
 

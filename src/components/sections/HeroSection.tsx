@@ -226,7 +226,7 @@ export default function HeroSection() {
                   className="flex justify-center lg:justify-start space-x-8 mt-8"
                 >
                   <div className="text-center">
-                    <div className="gaming-display text-2xl font-bold text-laser-green">50+</div>
+                    <div className="gaming-display text-2xl font-bold text-laser-green">40</div>
                     <div className="gaming-mono text-sm text-led-white/60">PROJETOS ENTREGUES</div>
                   </div>
                   <div className="text-center">
@@ -234,7 +234,7 @@ export default function HeroSection() {
                     <div className="gaming-mono text-sm text-led-white/60">SUPORTE DIGITAL</div>
                   </div>
                   <div className="text-center">
-                    <div className="gaming-display text-2xl font-bold text-magenta-power">10+</div>
+                    <div className="gaming-display text-2xl font-bold text-magenta-power">10</div>
                     <div className="gaming-mono text-sm text-led-white/60">ANOS EXPERIÊNCIA</div>
                   </div>
                 </motion.div>
@@ -472,14 +472,14 @@ export default function HeroSection() {
                     <div className="grid grid-cols-2 gap-4 pt-4">
                       <div className="hud-element text-center">
                         <div className="gaming-display text-2xl font-bold text-magenta-power">
-                          50+
+                          40
                         </div>
                         <div className="gaming-mono text-xs opacity-70">PROJETOS ENTREGUES</div>
                       </div>
                       
                       <div className="hud-element text-center">
                         <div className="gaming-display text-2xl font-bold text-plasma-yellow">
-                          10+
+                          10
                         </div>
                         <div className="gaming-mono text-xs opacity-70">ANOS EXPERIÊNCIA</div>
                       </div>
