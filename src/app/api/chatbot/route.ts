@@ -9,10 +9,10 @@ const chatSchema = z.object({
   userId: z.string().optional(),
 })
 
-// Initialize OpenAI
-const openai = new OpenAI({
+// Initialize OpenAI only if API key is available
+const openai = process.env.OPENAI_API_KEY ? new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
-})
+}) : null
 
 // Gaming personality prompt for PlayBot
 const PLAYBOT_SYSTEM_PROMPT = `
@@ -76,7 +76,7 @@ function isRateLimited(ip: string): boolean {
 export async function POST(request: NextRequest) {
   try {
     // Check if OpenAI is configured
-    if (!process.env.OPENAI_API_KEY) {
+    if (!process.env.OPENAI_API_KEY || !openai) {
       return NextResponse.json({
         error: 'OpenAI not configured',
         message: '🤖 PlayBot está temporariamente offline. Configure a OPENAI_API_KEY.',
