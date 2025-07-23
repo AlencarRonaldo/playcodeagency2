@@ -1,0 +1,16 @@
+{
+  "buildCommand": "npm run build",
+  "outputDirectory": ".next",
+  "devCommand": "npm run dev",
+  "installCommand": "npm install",
+  "framework": "nextjs",
+  "regions": ["gru1"],
+  "functions": {
+    "src/app/api/admin/*": {
+      "maxDuration": 30
+    },
+    "src/app/api/contact": {
+      "maxDuration": 30
+    }
+  }
+}
