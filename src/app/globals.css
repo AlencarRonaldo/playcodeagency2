@@ -1,6 +1,12 @@
 @import "tailwindcss";
 @import '../styles/gaming-tokens.css';
 
+/* Fallback colors */
+html {
+  background-color: #0A0A0F;
+  color: #FFFFFF;
+}
+
 :root {
   --background: #0A0A0F;
   --foreground: #FFFFFF;
@@ -14,11 +20,12 @@
 }
 
 body {
-  background: var(--color-dark-bg);
-  color: var(--color-dark-text);
-  font-family: var(--font-gaming-secondary);
+  background: var(--color-deep-space, #0A0A0F);
+  color: var(--color-led-white, #FFFFFF);
+  font-family: var(--font-gaming-secondary, 'Exo 2', sans-serif);
   line-height: 1.6;
   overflow-x: hidden;
+  min-height: 100vh;
 }
 
 * {
