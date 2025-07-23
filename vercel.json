@@ -1,21 +1,6 @@
 {
   "framework": "nextjs",
-  "buildCommand": "npm run build:vercel",
-  "devCommand": "npm run dev",
-  "installCommand": "npm install",
-  "regions": ["gru1"],
-  "functions": {
-    "src/app/api/admin/*": {
-      "maxDuration": 30
-    },
-    "src/app/api/contact": {
-      "maxDuration": 30
-    }
-  },
-  "rewrites": [
-    {
-      "source": "/(.*)",
-      "destination": "/"
-    }
-  ]
+  "buildCommand": "rm -rf .next && npm run build",
+  "installCommand": "npm install --force",
+  "regions": ["gru1"]
 }

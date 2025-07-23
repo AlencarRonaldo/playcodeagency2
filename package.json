@@ -7,7 +7,7 @@
     "dev:turbo": "next dev --turbopack",
     "dev:clean": "npm run cache:clear && next dev",
     "build": "next build",
-    "build:vercel": "rm -rf .next && next build",
+    "build:vercel": "bash build-vercel.sh",
     "build:analyze": "ANALYZE=true next build",
     "start": "next start",
     "lint": "next lint",
