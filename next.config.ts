@@ -32,10 +32,18 @@ const nextConfig: NextConfig = {
       };
     }
     
-    // Simplify optimization in development to prevent chunk errors
+    // Simplify optimization to prevent chunk errors
     if (dev) {
       config.optimization.splitChunks = false;
       config.optimization.runtimeChunk = false;
+    }
+    
+    // Fix module resolution for production builds
+    if (!dev && !isServer) {
+      config.optimization = {
+        ...config.optimization,
+        moduleIds: 'deterministic',
+      };
     }
     
     return config;

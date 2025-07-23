@@ -9,10 +9,20 @@ const chatSchema = z.object({
   userId: z.string().optional(),
 })
 
-// Initialize OpenAI only if API key is available
-const openai = process.env.OPENAI_API_KEY ? new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-}) : null
+// Initialize OpenAI - will be null in production without API key
+let openai: OpenAI | null = null;
+
+// Only initialize if we have an API key
+if (process.env.OPENAI_API_KEY && process.env.OPENAI_API_KEY !== '') {
+  try {
+    openai = new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY,
+    });
+  } catch (error) {
+    console.warn('Failed to initialize OpenAI:', error);
+    openai = null;
+  }
+}
 
 // Gaming personality prompt for PlayBot
 const PLAYBOT_SYSTEM_PROMPT = `
