@@ -1,0 +1,24 @@
+# Arquivos de desenvolvimento
+*.md
+*.bat
+docs/
+tests/
+scripts/deploy*.bat
+scripts/deploy*.sh
+
+# Configurações locais
+.env.local
+.env.development
+.env.test
+.env.production
+.vscode/
+
+# Arquivos de build alternativos
+next.config.*.ts
+!next.config.ts
+
+# Cache e temporários
+.next/
+node_modules/
+*.log
+.DS_Store
