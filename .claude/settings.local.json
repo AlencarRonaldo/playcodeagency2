@@ -47,7 +47,8 @@
       "Bash(chmod:*)",
       "Bash(mv:*)",
       "Bash(./build-hostinger.bat)",
-      "WebFetch(domain:nextjs-boilerplate-six-sooty-20.vercel.app)"
+      "WebFetch(domain:nextjs-boilerplate-six-sooty-20.vercel.app)",
+      "Bash(npm start)"
     ],
     "deny": []
   }
