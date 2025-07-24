@@ -176,25 +176,25 @@ export default function HeroSection() {
                   initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.3, duration: 0.8 }}
-                  className="gaming-title text-5xl lg:text-7xl font-bold mb-6 neon-glow text-neon-cyan"
+                  className="gaming-title text-5xl lg:text-7xl font-bold mb-6 neon-glow text-electric-blue"
                 >
                   <span className="sr-only">PlayCode Agency - </span>
                   READY
                   <br />
-                  <span className="text-magenta-power">PLAYER</span>
+                  <span className="text-plasma-yellow">PLAYER</span>
                   <br />
-                  <span className="text-gaming-purple">ONE?</span>
+                  <span className="text-laser-green">ONE?</span>
                 </motion.h1>
 
                 <motion.p
                   initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.6, duration: 0.8 }}
-                  className="gaming-subtitle text-xl lg:text-2xl mb-8 text-led-white/80 max-w-xl"
+                  className="gaming-subtitle text-xl lg:text-2xl mb-8 text-led-white/80 max-w-xl text-justify leading-relaxed"
                 >
-                  Transformamos seu negócio com <strong>desenvolvimento web profissional</strong>, 
-                  <strong>integração de IA</strong> e <strong>soluções digitais personalizadas</strong>. 
-                  Mais de <strong>40 clientes satisfeitos</strong> com <strong>10 anos de experiência</strong>.
+                  Transformamos seu negócio com <span className="font-bold text-neon-cyan">desenvolvimento web profissional</span>, 
+                  <span className="font-bold text-magenta-power"> integração de IA</span> e <span className="font-bold text-electric-blue">soluções digitais personalizadas</span>. 
+                  Mais de <span className="font-bold text-plasma-yellow">40 clientes satisfeitos</span> com <span className="font-bold text-laser-green">10 anos de experiência</span>.
                 </motion.p>
 
                 {/* Action Buttons */}
